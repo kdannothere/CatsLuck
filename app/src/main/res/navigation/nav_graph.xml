@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/welcome">
+
+    <fragment
+        android:id="@+id/welcome"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.WelcomeFragment"
+        tools:layout="@layout/fragment_welcome">
+
+        <action
+            android:id="@+id/action_Welcome_to_Menu"
+            app:destination="@id/menu"
+            app:popUpTo="@id/welcome" />
+        <action
+            android:id="@+id/action_welcome_to_email"
+            app:destination="@id/email"
+            app:popUpTo="@id/welcome" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/email"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.AuthEmailFragment"
+        tools:layout="@layout/fragment_auth_email" />
+
+    <fragment
+        android:id="@+id/menu"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.MenuFragment"
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/action_menu_to_games"
+            app:destination="@id/games"
+            app:popUpTo="@id/menu" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/gameSlot1"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.GameSlotFragment"
+        tools:layout="@layout/fragment_game_slot" />
+
+    <fragment
+        android:id="@+id/gameSlot2"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.GameSlot2Fragment"
+        tools:layout="@layout/fragment_game_slot_2" />
+
+    <fragment
+        android:id="@+id/gameBonus"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.GameBonusFragment"
+        tools:layout="@layout/fragment_game_bonus" />
+    <fragment
+        android:id="@+id/gameMiner2"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.GameMiner2Fragment"
+        android:label="GameMiner2Fragment"
+        tools:layout="@layout/fragment_game_miner2" />
+    <fragment
+        android:id="@+id/gameMiner1"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.GameMinerFragment"
+        android:label="GameMinerFragment"
+        tools:layout="@layout/fragment_game_miner" />
+    <fragment
+        android:id="@+id/games"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.GamesFragment"
+        android:label="GamesFragment"
+        tools:layout="@layout/fragment_games" >
+        <action
+            android:id="@+id/action_games_to_settings"
+            app:destination="@id/settings"
+            app:popUpTo="@id/games" />
+        <action
+            android:id="@+id/action_games_to_email"
+            app:destination="@id/email"
+            app:popUpTo="@id/games" />
+        <action
+            android:id="@+id/action_games_to_gameSlot1"
+            app:destination="@id/gameSlot1"
+            app:popUpTo="@id/games" />
+        <action
+            android:id="@+id/action_games_to_gameSlot2"
+            app:destination="@id/gameSlot2"
+            app:popUpTo="@id/games" />
+        <action
+            android:id="@+id/action_games_to_gameBonus"
+            app:destination="@id/gameBonus"
+            app:popUpTo="@id/games" />
+        <action
+            android:id="@+id/action_games_to_gameMiner1"
+            app:destination="@id/gameMiner1"
+            app:popUpTo="@id/games" />
+        <action
+            android:id="@+id/action_games_to_gameMiner2"
+            app:destination="@id/gameMiner2"
+            app:popUpTo="@id/games" />
+    </fragment>
+
+</navigation>
