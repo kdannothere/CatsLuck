@@ -25,7 +25,7 @@ import java.util.Date
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
-// logic for games
+// to do in: menu
 
 class GameViewModel(
     private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO,
@@ -37,13 +37,12 @@ class GameViewModel(
     val rightSlots = mutableListOf<Slot>()
 
     private var login = ""
+    var privacy = false
     var isMusicOn = true
     var isSoundOn = true
     var isVibrationOn = true
     val isUserLoggedIn get() = login.isNotEmpty()
     var isUserAnonymous = true
-    var isLoggingByEmail = false
-    var isLoggingByPhone = false
 
     private val _balance = MutableStateFlow(Constants.balanceDefault)
     val balance = _balance.asStateFlow()
@@ -53,6 +52,12 @@ class GameViewModel(
 
     private val _bet = MutableStateFlow(Constants.betDefault)
     val bet = _bet.asStateFlow()
+
+    private val _lvl = MutableStateFlow(1)
+    val lvl = _lvl.asStateFlow()
+
+    private val _winNumber = MutableStateFlow(0)
+    val winNumber = _winNumber.asStateFlow()
 
     private val _isPlayingSoundWin = MutableStateFlow(false)
     val isPlayingSoundWin = _isPlayingSoundWin.asStateFlow()
@@ -79,6 +84,9 @@ class GameViewModel(
     // last game data
     var lastBet = 0
     var isFinished = true
+
+    // Miner1
+    val positionsMiner1 = listOf(0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     init {
         getDegreeForSectors()
@@ -125,6 +133,8 @@ class GameViewModel(
                         if (isUserWon) {
                             setIsPlayingSoundWin(true)
                             setBalance(balance.value + sectorPrize, context)
+                            setWinNumber(winNumber.value + 1, context)
+                            setLvl(lvl.value, context)
                         } else setIsPlayingSoundLose(true)
 
                         setWin(sectorPrize)
@@ -230,16 +240,49 @@ class GameViewModel(
             setIsPlayingSoundWin(true)
             setBalance(balance.value + creditsWon, context)
             setWin(creditsWon)
+            setWinNumber(winNumber.value + 1, context)
+            setLvl(lvl.value, context)
         } else setIsPlayingSoundLose(true)
 
         setWin(creditsWon)
     }
 
-    fun generateSlots(amount: Int = 50) {
+    fun generateSlots(amount: Int = 50, gameId: Int) {
         repeat(amount) { id ->
-            leftSlots.add(Slot(id = id, imageId = ImageUtility.getRandomImageId()))
-            centerSlots.add(Slot(id = id, imageId = ImageUtility.getRandomImageId()))
-            rightSlots.add(Slot(id = id, imageId = ImageUtility.getRandomImageId()))
+            leftSlots.add(Slot(id = id, imageId = ImageUtility.getRandomImageId(gameId)))
+            centerSlots.add(Slot(id = id, imageId = ImageUtility.getRandomImageId(gameId)))
+            rightSlots.add(Slot(id = id, imageId = ImageUtility.getRandomImageId(gameId)))
+        }
+    }
+
+    private fun setInitialMinerSlots(amount: Int = 3) {
+        repeat(amount) { id ->
+            leftSlots.add(Slot(id = id, imageId = 0))
+            centerSlots.add(Slot(id = id, imageId = 0))
+            rightSlots.add(Slot(id = id, imageId = 0))
+        }
+    }
+
+    private fun updateMiner1Slots(amount: Int = 3) {
+        leftSlots.clear()
+        centerSlots.clear()
+        rightSlots.clear()
+        repeat(amount) { id ->
+            leftSlots.add(Slot(id = id, imageId = when(id) {
+                0 -> positionsMiner1[0]
+                1 -> positionsMiner1[1]
+                else -> positionsMiner1[2]
+            }))
+            centerSlots.add(Slot(id = id, imageId = when(id) {
+                0 -> positionsMiner1[3]
+                1 -> positionsMiner1[4]
+                else -> positionsMiner1[5]
+            }))
+            rightSlots.add(Slot(id = id, imageId = when(id) {
+                0 -> positionsMiner1[6]
+                1 -> positionsMiner1[7]
+                else -> positionsMiner1[8]
+            }))
         }
     }
 
@@ -314,6 +357,32 @@ class GameViewModel(
         }
     }
 
+    fun setLvl(value: Int, context: Context) {
+        viewModelScope.launch(dispatcherIO) {
+            _lvl.emit(getCurrentLvl())
+            if (isUserAnonymous) return@launch
+            DataManager.saveLvl(context, value)
+        }
+    }
+
+    private fun getCurrentLvl(): Int {
+        return when (winNumber.value) {
+            in 0..10 -> 1
+            in 10..20 -> 2
+            in 20..30 -> 3
+            in 30..40 -> 4
+            else -> winNumber.value / 10
+        }
+    }
+
+    fun setWinNumber(value: Int, context: Context) {
+        viewModelScope.launch(dispatcherIO) {
+            _winNumber.emit(value)
+            if (isUserAnonymous) return@launch
+            DataManager.saveWinNumber(context, value)
+        }
+    }
+
     fun increaseBet(context: Context) {
         if (
             bet.value < balance.value
@@ -344,7 +413,9 @@ class GameViewModel(
     }
 
     fun resetSlotPositions() {
-        positions.replaceAll { 0 }
+        positions[0] = 0
+        positions[1] = 0
+        positions[2] = 0
     }
 
     fun resetSlots() {

@@ -9,14 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.adrenaline.ofathlet.BestActivity
 import com.adrenaline.ofathlet.R
+import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentMenuBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
 import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 class MenuFragment : Fragment() {
 
@@ -30,44 +36,26 @@ class MenuFragment : Fragment() {
     ): View {
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
 
-        binding.buttonBack.setOnClickListener {
+        binding.games.setOnClickListener {
             playClickSound()
-            findNavController().navigateUp()
-        }
-
-        binding.buttonGame1.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_Game1Fragment)
-        }
-
-        binding.buttonGame2.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_Game2Fragment)
-        }
-
-        binding.buttonGameBonus.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_GameBonusFragment)
-        }
-
-        binding.buttonSettings.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_SettingsFragment)
-        }
-
-        binding.linkPrivacy.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/"))
-            startActivity(browserIntent)
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // fix for auto text feature for older Android APIs
-            ViewUtility.apply {
-                makeTextAutoSize(binding.linkPrivacy)
-                makeTextAutoSize(binding.titleGame1)
-                makeTextAutoSize(binding.titleGame2)
-                makeTextAutoSize(binding.titleGameBonus)
+            when (viewModel.privacy) {
+                true -> findNavController().navigate(R.id.action_menu_to_games)
+                false -> findNavController().navigate(R.id.action_menu_to_privacy)
             }
+        }
+
+        binding.settings.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.action_menu_to_settings)
+        }
+
+        binding.privacy.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.action_menu_to_privacy)
+        }
+
+        binding.exit.setOnClickListener {
+            exitProcess(0)
         }
 
         return binding.root
@@ -75,9 +63,23 @@ class MenuFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        loadData()
         viewModel.setWin(0)
         viewModel.resetSlotPositions()
         viewModel.resetSlots()
+    }
+
+    private fun loadData() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val isPrivacyAccepted = async { DataManager.loadPrivacy(requireContext()) }
+            val winNumber =
+                async { DataManager.loadWinNumber(requireContext(), viewModel.winNumber.value) }
+
+            val lvl = async { DataManager.loadLvl(requireContext(), viewModel.lvl.value) }
+            viewModel.privacy = isPrivacyAccepted.await()
+            viewModel.setWinNumber(winNumber.await(), requireContext())
+            viewModel.setLvl(lvl.await(), requireContext())
+        }
     }
 
     private fun playClickSound() {

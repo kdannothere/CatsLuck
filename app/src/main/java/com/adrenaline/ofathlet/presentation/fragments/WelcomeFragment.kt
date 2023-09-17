@@ -1,6 +1,5 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,6 @@ import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentWelcomeBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
-import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -33,7 +31,7 @@ class WelcomeFragment : Fragment() {
     ): View {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
 
-        binding.buttonPlay.setOnClickListener {
+        binding.buttonStart.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 playClickSound()
                 viewModel.loadSettings(requireContext())
@@ -44,21 +42,15 @@ class WelcomeFragment : Fragment() {
                 if (login.await().isNotEmpty()) {
                     launch(Dispatchers.Main) {
                         viewModel.isUserAnonymous = false
+                        viewModel.signIn(requireContext(), login.await())
                         loadData()
-                        findNavController().navigate(R.id.action_WelcomeFragment_to_MenuFragment)
+                        findNavController().navigate(R.id.action_welcome_to_menu)
                     }
                 } else {
                     launch(Dispatchers.Main) {
-                        findNavController().navigate(R.id.action_WelcomeFragment_to_AuthFragment)
+                        findNavController().navigate(R.id.action_welcome_to_menu)
                     }
                 }
-            }
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // fixing auto text feature for older Android APIs
-            ViewUtility.apply {
-                makeTextAutoSize(binding.textSignUp)
-                makeTextAutoSize(binding.titlePlay)
             }
         }
 

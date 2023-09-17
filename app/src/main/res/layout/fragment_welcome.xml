@@ -11,7 +11,7 @@
         android:id="@+id/text_sign_up"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:autoSizeTextType="uniform"
+        app:autoSizeTextType="uniform"
         android:text="@string/welcome"
         android:fontFamily="@font/montserrat_bold"
         android:lines="1"

@@ -30,44 +30,19 @@ class PrivacyFragment : Fragment() {
     ): View {
         _binding = FragmentPrivacyBinding.inflate(inflater, container, false)
 
-        binding.buttonBack.setOnClickListener {
-            playClickSound()
-            findNavController().navigateUp()
-        }
-
-        binding.buttonGame1.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_Game1Fragment)
-        }
-
-        binding.buttonGame2.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_Game2Fragment)
-        }
-
-        binding.buttonGameBonus.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_GameBonusFragment)
-        }
-
-        binding.buttonSettings.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_SettingsFragment)
-        }
-
-        binding.linkPrivacy.setOnClickListener {
+        binding.buttonPrivacy.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/"))
             startActivity(browserIntent)
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // fix for auto text feature for older Android APIs
-            ViewUtility.apply {
-                makeTextAutoSize(binding.linkPrivacy)
-                makeTextAutoSize(binding.titleGame1)
-                makeTextAutoSize(binding.titleGame2)
-                makeTextAutoSize(binding.titleGameBonus)
-            }
+        binding.buttonNo.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.action_privacy_to_menu)
+        }
+
+        binding.buttonYes.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.action_privacy_to_menu)
         }
 
         return binding.root

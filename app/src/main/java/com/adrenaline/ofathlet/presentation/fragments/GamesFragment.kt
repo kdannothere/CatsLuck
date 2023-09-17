@@ -1,14 +1,12 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.adrenaline.ofathlet.BestActivity
@@ -16,7 +14,8 @@ import com.adrenaline.ofathlet.R
 import com.adrenaline.ofathlet.databinding.FragmentGamesBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
-import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class GamesFragment : Fragment() {
 
@@ -30,44 +29,43 @@ class GamesFragment : Fragment() {
     ): View {
         _binding = FragmentGamesBinding.inflate(inflater, container, false)
 
-        binding.buttonBack.setOnClickListener {
-            playClickSound()
-            findNavController().navigateUp()
-        }
-
-        binding.buttonGame1.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_Game1Fragment)
-        }
-
-        binding.buttonGame2.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_Game2Fragment)
-        }
-
-        binding.buttonGameBonus.setOnClickListener {
-            playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_GameBonusFragment)
-        }
+        viewModel.lvl.onEach { newValue ->
+            binding.lvlValue.text = newValue.toString()
+        }.launchIn(lifecycleScope)
 
         binding.buttonSettings.setOnClickListener {
             playClickSound()
-            findNavController().navigate(R.id.action_MenuFragment_to_SettingsFragment)
+            findNavController().navigate(R.id.action_games_to_settings)
         }
 
-        binding.linkPrivacy.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/"))
-            startActivity(browserIntent)
+        binding.buttonRegister.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.action_games_to_email)
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // fix for auto text feature for older Android APIs
-            ViewUtility.apply {
-                makeTextAutoSize(binding.linkPrivacy)
-                makeTextAutoSize(binding.titleGame1)
-                makeTextAutoSize(binding.titleGame2)
-                makeTextAutoSize(binding.titleGameBonus)
-            }
+        binding.game1.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.game_1)
+        }
+
+        binding.game2.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.game_2)
+        }
+
+        binding.game3.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.game_3)
+        }
+
+        binding.game4.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.game_4)
+        }
+
+        binding.game5.setOnClickListener {
+            playClickSound()
+            findNavController().navigate(R.id.game_5)
         }
 
         return binding.root
@@ -75,6 +73,7 @@ class GamesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        viewStateHandling()
         viewModel.setWin(0)
         viewModel.resetSlotPositions()
         viewModel.resetSlots()
@@ -89,5 +88,24 @@ class GamesFragment : Fragment() {
             viewModel.isSoundOn,
             viewModel.isVibrationOn
         )
+    }
+
+    private fun viewStateHandling() {
+        when {
+            viewModel.isUserLoggedIn -> {
+                binding.apply {
+                    buttonRegister.visibility = View.GONE
+                    lvl.visibility = View.VISIBLE
+                    lvlValue.visibility = View.VISIBLE
+                }
+            }
+            else -> {
+                binding.apply {
+                    buttonRegister.visibility = View.VISIBLE
+                    lvl.visibility = View.GONE
+                    lvlValue.visibility = View.GONE
+                }
+            }
+        }
     }
 }

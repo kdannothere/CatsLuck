@@ -1,6 +1,5 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import com.adrenaline.ofathlet.data.Constants
 import com.adrenaline.ofathlet.databinding.FragmentGameBonusBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
-import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -55,17 +53,6 @@ class GameBonusFragment : Fragment() {
         }.launchIn(lifecycleScope)
 
         binding.betValue.text = Constants.betDefault.toString()
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // fixing auto text feature for older Android APIs
-            ViewUtility.apply {
-                makeTextAutoSize(binding.totalTitle)
-                makeTextAutoSize(binding.winTitle)
-                makeTextAutoSize(binding.winValue)
-                makeTextAutoSize(binding.totalValue)
-                makeTextAutoSize(binding.betValue)
-            }
-        }
 
         return binding.root
     }

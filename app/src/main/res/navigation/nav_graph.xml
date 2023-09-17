@@ -11,19 +11,24 @@
         tools:layout="@layout/fragment_welcome">
 
         <action
-            android:id="@+id/action_Welcome_to_Menu"
+            android:id="@+id/action_welcome_to_menu"
             app:destination="@id/menu"
             app:popUpTo="@id/welcome" />
         <action
-            android:id="@+id/action_welcome_to_email"
-            app:destination="@id/email"
+            android:id="@+id/action_welcome_to_privacy"
+            app:destination="@id/privacy"
             app:popUpTo="@id/welcome" />
     </fragment>
 
     <fragment
         android:id="@+id/email"
         android:name="com.adrenaline.ofathlet.presentation.fragments.AuthEmailFragment"
-        tools:layout="@layout/fragment_auth_email" />
+        tools:layout="@layout/fragment_auth_email" >
+        <action
+            android:id="@+id/action_email_to_menu"
+            app:destination="@id/menu"
+            app:popUpTo="@id/email" />
+    </fragment>
 
     <fragment
         android:id="@+id/menu"
@@ -32,6 +37,14 @@
         <action
             android:id="@+id/action_menu_to_games"
             app:destination="@id/games"
+            app:popUpTo="@id/menu" />
+        <action
+            android:id="@+id/action_menu_to_settings"
+            app:destination="@id/settings"
+            app:popUpTo="@id/menu" />
+        <action
+            android:id="@+id/action_menu_to_privacy"
+            app:destination="@id/privacy"
             app:popUpTo="@id/menu" />
     </fragment>
 
@@ -97,6 +110,20 @@
             android:id="@+id/action_games_to_gameMiner2"
             app:destination="@id/gameMiner2"
             app:popUpTo="@id/games" />
+    </fragment>
+    <fragment
+        android:id="@+id/privacy"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.PrivacyFragment"
+        android:label="PrivacyFragment"
+        tools:layout="@layout/fragment_privacy">
+        <action
+            android:id="@+id/action_privacy_to_menu"
+            app:destination="@id/menu"
+            app:popUpTo="@id/privacy" />
+        <action
+            android:id="@+id/action_privacy_to_games"
+            app:destination="@id/games"
+            app:popUpTo="@id/menu" />
     </fragment>
 
 </navigation>

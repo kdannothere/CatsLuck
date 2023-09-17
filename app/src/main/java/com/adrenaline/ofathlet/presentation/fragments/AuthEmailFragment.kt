@@ -30,35 +30,28 @@ class AuthEmailFragment : Fragment() {
     ): View {
         _binding = FragmentAuthEmailBinding.inflate(inflater, container, false)
 
-        binding.buttonPlay.setOnClickListener {
+        binding.buttonStart.setOnClickListener {
             playClickSound()
             signIn()
             if (viewModel.isUserLoggedIn) {
-                findNavController().navigate(R.id.action_AuthEmailFragment_to_MenuFragment)
+                findNavController().navigate(R.id.action_email_to_menu)
             }
         }
 
-        binding.loginValue.setOnEditorActionListener { view, actionId, _ ->
+        binding.fieldEmail.setOnEditorActionListener { view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 ViewUtility.hideSoftKeyboard(view, this)
-                binding.buttonPlay.callOnClick()
+                binding.buttonStart.callOnClick()
                 true
             } else {
                 false
-            }
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // fixing auto text feature for older android devices
-            ViewUtility.apply {
-                makeTextAutoSize(binding.textSignUp)
-                makeTextAutoSize(binding.titlePlay)
             }
         }
 
         return binding.root
     }
 
-    private fun signIn(email: String = binding.loginValue.text.toString()) {
+    private fun signIn(email: String = binding.fieldEmail.text.toString()) {
         val isEmailAddress = Patterns.EMAIL_ADDRESS.matcher(email).matches()
         if (!isEmailAddress) {
             MusicUtility.doVibrate(

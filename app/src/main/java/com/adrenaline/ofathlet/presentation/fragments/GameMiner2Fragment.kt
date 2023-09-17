@@ -1,29 +1,21 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.adrenaline.ofathlet.BestActivity
 import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentGameMiner2Binding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.slot.SlotAdapter
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
-import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -33,9 +25,8 @@ class GameMiner2Fragment : Fragment() {
     private var _binding: FragmentGameMiner2Binding? = null
     private val binding get() = _binding!!
     private val viewModel: GameViewModel by activityViewModels()
-    private lateinit var vto: ViewTreeObserver
+    private val gameId = 4
     private lateinit var leftSlotAdapter: SlotAdapter
-    private lateinit var centerSlotAdapter: SlotAdapter
     private lateinit var rightSlotAdapter: SlotAdapter
 
     override fun onCreateView(
@@ -44,23 +35,10 @@ class GameMiner2Fragment : Fragment() {
     ): View {
         _binding = FragmentGameMiner2Binding.inflate(inflater, container, false)
 
-        vto = binding.slotField.viewTreeObserver
-        ViewUtility.updateFieldHeight(binding.slotField, vto)
-
         viewModel.apply {
-            if (leftSlots.isEmpty()) generateSlots()
+            if (leftSlots.isEmpty()) generateSlots(gameId = gameId)
             binding.totalValue.text = balance.value.toString()
             binding.betValue.text = bet.value.toString()
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // fixing auto text feature for older Android APIs
-            ViewUtility.apply {
-                makeTextAutoSize(binding.totalTitle)
-                makeTextAutoSize(binding.winTitle)
-                makeTextAutoSize(binding.winValue)
-                makeTextAutoSize(binding.totalValue)
-                makeTextAutoSize(binding.betValue)
-            }
         }
         return binding.root
     }
@@ -68,15 +46,11 @@ class GameMiner2Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch(Dispatchers.IO) {
-            while (!ViewUtility.isHeightCorrect) {
-                delay(100L)
-            }
             launch(Dispatchers.Main) {
                 setRecyclerViews()
                 setClickListeners()
                 viewModel.apply {
                     binding.leftRecyclerView.scrollToPosition(positions[0])
-                    binding.centerRecyclerView.scrollToPosition(positions[1])
                     binding.rightRecyclerView.scrollToPosition(positions[2])
                 }
             }
@@ -112,20 +86,13 @@ class GameMiner2Fragment : Fragment() {
         super.onDestroy()
         handleLastGameFinishing()
         _binding = null
-        ViewUtility.isHeightCorrect = false
     }
 
     private fun setRecyclerViews() {
-        leftSlotAdapter = SlotAdapter(viewModel.leftSlots)
-        centerSlotAdapter = SlotAdapter(viewModel.centerSlots)
-        rightSlotAdapter = SlotAdapter(viewModel.rightSlots)
+        leftSlotAdapter = SlotAdapter(viewModel.leftSlots, gameId)
+        rightSlotAdapter = SlotAdapter(viewModel.rightSlots, gameId)
         binding.leftRecyclerView.apply {
             adapter = leftSlotAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            setOnTouchListener { _, _ -> true }
-        }
-        binding.centerRecyclerView.apply {
-            adapter = centerSlotAdapter
             layoutManager = LinearLayoutManager(requireContext())
             setOnTouchListener { _, _ -> true }
         }
@@ -134,59 +101,24 @@ class GameMiner2Fragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             setOnTouchListener { _, _ -> true }
         }
-        setCorrectRecyclerViewHeight(
-            listOf(
-                binding.leftRecyclerView,
-                binding.centerRecyclerView,
-                binding.rightRecyclerView
-            )
-        )
-    }
-
-    private fun setCorrectRecyclerViewHeight(recyclers: List<RecyclerView?>) {
-        val params = listOf(
-            recyclers[0]?.layoutParams,
-            recyclers[1]?.layoutParams,
-            recyclers[2]?.layoutParams
-        )
-        val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            requireContext().display
-        } else {
-            @Suppress("DEPRECATION")
-            (requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-        }
-        val rotation = display?.rotation
-        val heightMultiplier =
-            if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) {
-                // for the device in the portrait orientation
-                2.48
-            } else {
-                // for the device in the landscape orientation
-                2.39
-            }
-        repeat(3) { index ->
-            params[index]?.height = (ViewUtility.getSlotHeight() * heightMultiplier).toInt()
-            recyclers[index]?.layoutParams = params[index]
-        }
     }
 
     private fun setClickListeners() {
 
         binding.apply {
 
-            buttonRepeat.setOnClickListener {
+            buttonPlay.setOnClickListener {
                 playClickSound()
                 viewModel.spinSlots(
                     listOf(
                         leftRecyclerView,
-                        centerRecyclerView,
                         rightRecyclerView
                     ),
                     requireContext()
                 )
             }
 
-            buttonIncreaseBet.setOnClickListener {
+            plus.setOnClickListener {
                 playClickSound()
                 viewModel.increaseBet(requireContext())
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -197,7 +129,7 @@ class GameMiner2Fragment : Fragment() {
                 }
             }
 
-            buttonDecreaseBet.setOnClickListener {
+            minus.setOnClickListener {
                 playClickSound()
                 viewModel.decreaseBet(requireContext())
                 lifecycleScope.launch(Dispatchers.IO) {

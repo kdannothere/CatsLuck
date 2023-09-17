@@ -11,7 +11,7 @@
         android:id="@+id/enter_email"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:autoSizeTextType="uniform"
+        app:autoSizeTextType="uniform"
         android:fontFamily="@font/montserrat_bold"
         android:text="@string/enter_email"
         android:textAlignment="center"

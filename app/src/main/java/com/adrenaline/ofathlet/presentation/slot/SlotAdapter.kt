@@ -9,7 +9,7 @@ import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
 
 class SlotAdapter(
     private val slotList: List<Slot>,
-    private val isGame2: Boolean = false,
+    private val gameId: Int,
 ) :
     RecyclerView.Adapter<SlotAdapter.SlotViewHolder>() {
 
@@ -27,15 +27,7 @@ class SlotAdapter(
     override fun onBindViewHolder(holder: SlotViewHolder, position: Int) {
         val imageId = slotList[position].imageId
         holder.binding.image.apply {
-            setImageResource(ImageUtility.getDrawableId(imageId, isGame2))
-        }
-        val hmForPort = 0.85 // heightMultiplier
-        val hmForLand = 0.95 // heightMultiplier
-        val hm = if (ViewUtility.orientation == 0) hmForPort else hmForLand
-        val heightMultiplier:Double = if (!isGame2) 0.8 else hm
-        holder.binding.root.apply {
-            minHeight = (ViewUtility.getSlotHeight() * heightMultiplier).toInt()
-            maxHeight = (ViewUtility.getSlotHeight() * heightMultiplier).toInt()
+            setImageResource(ImageUtility.getDrawableId(imageId, gameId))
         }
     }
 
