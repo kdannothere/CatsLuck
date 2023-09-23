@@ -23,28 +23,29 @@ object ImageUtility {
     private val drawable11 = R.drawable.sdfsdg
 
     // for Miner1
-    private val drawable12 = R.drawable.question_round
-    private val drawable13 = R.drawable.s2
-    private val drawable14 = R.drawable.s3
-    private val drawable15 = R.drawable.s4
-    private val drawable16 = R.drawable.s1
+    val miner1_0 = R.drawable.m_0
+    val miner1_1 = R.drawable.m_1
+    val miner1_2 = R.drawable.m_2
+    val miner1_3 = R.drawable.m_3
+    val miner1_4 = R.drawable.m_4
 
     // for Miner2
-    private val drawable17 = R.drawable.question_square
-    private val drawable18 = R.drawable.mmmkkk
-    private val drawable19 = R.drawable.mmmmaaa
-    private val drawable20 = R.drawable.mmmjjj
+    val miner2_0 = R.drawable.m2_0
+    val miner2_1 = R.drawable.m2_1
+    val miner2_2 = R.drawable.m2_2
+    val miner2_3 = R.drawable.m2_3
 
     fun getRandomImageId(gameId: Int): Int {
         return when (gameId) {
-            1, 3 -> Random.nextInt(0, 5)
+            1 -> Random.nextInt(0, 5)
             2 -> Random.nextInt(0, 6)
-            4 -> Random.nextInt(0, 4)
+            3 -> Random.nextInt(1, 5)
+            4 -> Random.nextInt(1, 4)
             else -> throw Exception(exceptionMsg)
         }
     }
 
-    fun getDrawableId(imageId: Int, gameId: Int = 1): Int {
+    fun getDrawableById(imageId: Int, gameId: Int = 1): Int {
         return when (gameId) {
             1 -> when (imageId) {
                 0 -> drawable1
@@ -54,6 +55,7 @@ object ImageUtility {
                 4 -> drawable5
                 else -> throw Exception(exceptionMsg)
             }
+
             2 -> when (imageId) {
                 0 -> drawable6
                 1 -> drawable7
@@ -63,21 +65,24 @@ object ImageUtility {
                 5 -> drawable11
                 else -> throw Exception(exceptionMsg)
             }
+
             3 -> when (imageId) {
-                0 -> drawable12
-                1 -> drawable13
-                2 -> drawable14
-                3 -> drawable15
-                4 -> drawable16
+                0 -> miner1_0
+                1 -> miner1_1
+                2 -> miner1_2
+                3 -> miner1_3
+                4 -> miner1_4
                 else -> throw Exception(exceptionMsg)
             }
+
             4 -> when (imageId) {
-                0 -> drawable17
-                1 -> drawable18
-                2 -> drawable19
-                3 -> drawable20
+                0 -> miner2_0
+                1 -> miner2_1
+                2 -> miner2_2
+                3 -> miner2_3
                 else -> throw Exception(exceptionMsg)
             }
+
             else -> throw Exception(exceptionMsg)
         }
     }

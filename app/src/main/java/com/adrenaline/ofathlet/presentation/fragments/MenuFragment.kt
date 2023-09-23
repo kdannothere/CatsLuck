@@ -1,27 +1,19 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.adrenaline.ofathlet.BestActivity
 import com.adrenaline.ofathlet.R
-import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentMenuBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
-import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
 class MenuFragment : Fragment() {
@@ -61,27 +53,6 @@ class MenuFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadData()
-        viewModel.setWin(0)
-        viewModel.resetSlotPositions()
-        viewModel.resetSlots()
-    }
-
-    private fun loadData() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val isPrivacyAccepted = async { DataManager.loadPrivacy(requireContext()) }
-            val winNumber =
-                async { DataManager.loadWinNumber(requireContext(), viewModel.winNumber.value) }
-
-            val lvl = async { DataManager.loadLvl(requireContext(), viewModel.lvl.value) }
-            viewModel.privacy = isPrivacyAccepted.await()
-            viewModel.setWinNumber(winNumber.await(), requireContext())
-            viewModel.setLvl(lvl.await(), requireContext())
-        }
-    }
-
     private fun playClickSound() {
         MusicUtility.playSound(
             mediaPlayer = (activity as BestActivity).soundPlayer,
@@ -91,5 +62,16 @@ class MenuFragment : Fragment() {
             viewModel.isSoundOn,
             viewModel.isVibrationOn
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 }

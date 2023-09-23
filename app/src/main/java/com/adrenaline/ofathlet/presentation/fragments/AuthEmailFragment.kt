@@ -1,5 +1,6 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
@@ -73,5 +74,16 @@ class AuthEmailFragment : Fragment() {
             viewModel.isSoundOn,
             viewModel.isVibrationOn
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 }

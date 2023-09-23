@@ -25,8 +25,6 @@ import java.util.Date
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
-// to do in: menu
-
 class GameViewModel(
     private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO,
     private val dispatcherMain: CoroutineDispatcher = Dispatchers.Main,
@@ -74,7 +72,7 @@ class GameViewModel(
     // wheel variables
     private var spinningDuration = 4000L
     private val sectorsPrizes =
-        intArrayOf(0, 100, 50, 0, 10, 200, 10, 100, 50, 100)
+        doubleArrayOf(0.0, 1.2, 1.0, 0.0, 1.2, 1.0, 1.2, 2.0, 1.0, 1.2)
     private val sectorDegrees = mutableListOf<Int>()
 
     // current position of wheel
@@ -84,12 +82,92 @@ class GameViewModel(
     // last game data
     var lastBet = 0
     var isFinished = true
+    var isFinishing = false
 
-    // Miner1
-    val positionsMiner1 = listOf(0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    // Miner
+
+    private val winField = mutableListOf<Int>()
+    val positionsMinerLeft = mutableListOf(0, 0, 0)
+    val positionsMinerCenter = mutableListOf(0, 0, 0)
+    val positionsMinerRight = mutableListOf(0, 0, 0)
+
+    private val _minerStateChanged = MutableStateFlow(false)
+    val minerStateChanged = _minerStateChanged.asStateFlow()
 
     init {
         getDegreeForSectors()
+    }
+
+    fun playMiner(gameId: Int, context: Context) {
+        if (!isFinished || isFinishing) return
+        isFinished = false
+        lastBet = bet.value
+        setBalance(balance.value - bet.value, context)
+        generateWinField(gameId)
+        resetPositions()
+        setMinerStateChanged(!minerStateChanged.value)
+    }
+
+    fun discover(gameId: Int, index: Int, view: ImageView) {
+        if (isFinished) return
+        when {
+            gameId == 3 && index == 0 -> positionsMinerLeft[0] = winField[index]
+            gameId == 3 && index == 1 -> positionsMinerLeft[1] = winField[index]
+            gameId == 3 && index == 2 -> positionsMinerLeft[2] = winField[index]
+            gameId == 3 && index == 3 -> positionsMinerCenter[0] = winField[index]
+            gameId == 3 && index == 4 -> positionsMinerCenter[1] = winField[index]
+            gameId == 3 && index == 5 -> positionsMinerCenter[2] = winField[index]
+            gameId == 3 && index == 6 -> positionsMinerRight[0] = winField[index]
+            gameId == 3 && index == 7 -> positionsMinerRight[1] = winField[index]
+            gameId == 3 && index == 8 -> positionsMinerRight[2] = winField[index]
+            gameId == 4 && index == 0 -> positionsMinerLeft[0] = winField[index]
+            gameId == 4 && index == 1 -> positionsMinerLeft[2] = winField[index]
+            gameId == 4 && index == 2 -> positionsMinerRight[0] = winField[index]
+            gameId == 4 && index == 3 -> positionsMinerRight[2] = winField[index]
+        }
+        view.setImageResource(ImageUtility.getDrawableById(winField[index], gameId))
+        if (noMinesMore(gameId)) isFinishing = true
+        setMinerStateChanged(!minerStateChanged.value)
+    }
+
+    private fun noMinesMore(gameId: Int): Boolean {
+        return if (gameId == 3) {
+            !positionsMinerLeft.contains(0)
+                    && !positionsMinerCenter.contains(0)
+                    && !positionsMinerRight.contains(0)
+        } else {
+            !(positionsMinerLeft[0] == 0 || positionsMinerLeft[2] == 0)
+                    && !(positionsMinerRight[0] == 0 || positionsMinerRight[2] == 0)
+        }
+    }
+
+    fun finishMiner(gameId: Int, context: Context) {
+        val maxValue = if (gameId == 3) 4 else 3
+        var prize = 0.0
+        winField.forEach {
+            prize += bet.value * getMultiplier(maxValue, it)
+        }
+        if (prize > 0) {
+            setIsPlayingSoundWin(true)
+            setBalance(balance.value + prize.toInt(), context)
+            setWin(prize.toInt())
+            setWinNumber(winNumber.value + 1, context)
+            setLvl(lvl.value, context)
+        } else setIsPlayingSoundLose(true)
+        lastBet = 0
+        isFinished = true
+        isFinishing = false
+    }
+
+    private fun getMultiplier(maxValue: Int, index: Int): Double {
+        return when (index) {
+            1 -> 0.00
+            2 -> if (maxValue == 3) 0.15 else 0.05
+            3 -> if (maxValue == 3) 0.7 else 0.1
+            4 -> 0.3
+            else -> 0.0
+        }
     }
 
     fun spinWheel(
@@ -102,10 +180,6 @@ class GameViewModel(
             isFinished = false
             lastBet = bet.value
             setBalance(balance.value - bet.value, context)
-            if (balance.value < 0) setBalance(
-                Constants.balanceDefault,
-                context
-            ) // for infinite credits
             val fromDegrees = sectorDegrees[sectorIndex].toFloat()
             sectorIndex = random.nextInt(0, sectorDegrees.size)
             val toDegrees = (360 * sectorDegrees.size).toFloat() + sectorDegrees[sectorIndex]
@@ -128,16 +202,16 @@ class GameViewModel(
 
                     override fun onAnimationEnd(animation: Animation?) {
                         val sectorPrize = sectorsPrizes[sectorsPrizes.size - (sectorIndex + 1)]
-                        val isUserWon = sectorPrize != 0
+                        val isUserWon = sectorPrize != 0.0
 
                         if (isUserWon) {
                             setIsPlayingSoundWin(true)
-                            setBalance(balance.value + sectorPrize, context)
+                            setBalance(balance.value + (sectorPrize * bet.value).toInt(), context)
                             setWinNumber(winNumber.value + 1, context)
                             setLvl(lvl.value, context)
                         } else setIsPlayingSoundLose(true)
 
-                        setWin(sectorPrize)
+                        setWin((sectorPrize * bet.value).toInt())
 
                         isSpinningWheel = false
                         isFinished = true
@@ -162,10 +236,6 @@ class GameViewModel(
             lastBet = bet.value
             isSpinningSlots = true
             setBalance(balance.value - bet.value, context)
-            if (balance.value < 0) setBalance(
-                Constants.balanceDefault,
-                context
-            ) // for infinite credits
             generateNewPositions()
             repeat(3) { index ->
                 scroll(recyclers[index], index, context)
@@ -255,37 +325,6 @@ class GameViewModel(
         }
     }
 
-    private fun setInitialMinerSlots(amount: Int = 3) {
-        repeat(amount) { id ->
-            leftSlots.add(Slot(id = id, imageId = 0))
-            centerSlots.add(Slot(id = id, imageId = 0))
-            rightSlots.add(Slot(id = id, imageId = 0))
-        }
-    }
-
-    private fun updateMiner1Slots(amount: Int = 3) {
-        leftSlots.clear()
-        centerSlots.clear()
-        rightSlots.clear()
-        repeat(amount) { id ->
-            leftSlots.add(Slot(id = id, imageId = when(id) {
-                0 -> positionsMiner1[0]
-                1 -> positionsMiner1[1]
-                else -> positionsMiner1[2]
-            }))
-            centerSlots.add(Slot(id = id, imageId = when(id) {
-                0 -> positionsMiner1[3]
-                1 -> positionsMiner1[4]
-                else -> positionsMiner1[5]
-            }))
-            rightSlots.add(Slot(id = id, imageId = when(id) {
-                0 -> positionsMiner1[6]
-                1 -> positionsMiner1[7]
-                else -> positionsMiner1[8]
-            }))
-        }
-    }
-
     private fun getImageIdById(id: Int, slots: MutableList<Slot>): Int {
         var imageId = 0
         slots.forEach {
@@ -325,7 +364,14 @@ class GameViewModel(
 
     fun setBalance(value: Int, context: Context) {
         viewModelScope.launch(dispatcherIO) {
-            _balance.emit(value)
+            _balance.emit(
+                // for infinite credits
+                when {
+                    Constants.balanceDefault < bet.value -> bet.value
+                    value < bet.value && value != 0 -> Constants.balanceDefault
+                    else -> value
+                }
+            )
             if (isUserAnonymous) return@launch
             DataManager.saveBalance(context, value)
         }
@@ -346,6 +392,12 @@ class GameViewModel(
     fun setIsPlayingSoundLose(value: Boolean) {
         viewModelScope.launch {
             _isPlayingSoundLose.emit(value)
+        }
+    }
+
+    private fun setMinerStateChanged(value: Boolean) {
+        viewModelScope.launch {
+            _minerStateChanged.emit(value)
         }
     }
 
@@ -412,10 +464,33 @@ class GameViewModel(
         setBet(Constants.betDefault, context)
     }
 
-    fun resetSlotPositions() {
+    fun removeAccount(context: Context) {
+        setBalance(Constants.balanceDefault, context)
+        setBet(Constants.betDefault, context)
+        setWinNumber(0, context)
+        setLvl(0, context)
+        login = ""
+        privacy = false
+        isUserAnonymous = true
+        viewModelScope.launch(dispatcherIO) {
+            DataManager.saveLogin(context, login)
+            DataManager.savePrivacy(context, false)
+        }
+    }
+
+    fun resetPositions() {
         positions[0] = 0
         positions[1] = 0
         positions[2] = 0
+        positionsMinerLeft[0] = 0
+        positionsMinerLeft[1] = 0
+        positionsMinerLeft[2] = 0
+        positionsMinerCenter[0] = 0
+        positionsMinerCenter[1] = 0
+        positionsMinerCenter[2] = 0
+        positionsMinerRight[0] = 0
+        positionsMinerRight[1] = 0
+        positionsMinerRight[2] = 0
     }
 
     fun resetSlots() {
@@ -431,6 +506,19 @@ class GameViewModel(
                 sectorDegrees += (it + 1) * oneSectorDegree
             }
         }
+    }
+
+    private fun generateWinField(gameId: Int) {
+        val numberOfSlots = if (gameId == 3) 9 else 4
+        winField.clear()
+        repeat(numberOfSlots) {
+            winField += getMinerSlot(gameId)
+        }
+    }
+
+    private fun getMinerSlot(gameId: Int): Int {
+        val maxValue = if (gameId == 3) 4 else 3
+        return random.nextInt(1, maxValue + 1)
     }
 
     fun loadSettings(context: Context) {

@@ -1,5 +1,6 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,27 +46,27 @@ class GamesFragment : Fragment() {
 
         binding.game1.setOnClickListener {
             playClickSound()
-            findNavController().navigate(R.id.game_1)
+            findNavController().navigate(R.id.action_games_to_gameSlot1)
         }
 
         binding.game2.setOnClickListener {
             playClickSound()
-            findNavController().navigate(R.id.game_2)
+            findNavController().navigate(R.id.action_games_to_gameSlot2)
         }
 
         binding.game3.setOnClickListener {
             playClickSound()
-            findNavController().navigate(R.id.game_3)
+            findNavController().navigate(R.id.action_games_to_gameBonus)
         }
 
         binding.game4.setOnClickListener {
             playClickSound()
-            findNavController().navigate(R.id.game_4)
+            findNavController().navigate(R.id.action_games_to_gameMiner1)
         }
 
         binding.game5.setOnClickListener {
             playClickSound()
-            findNavController().navigate(R.id.game_5)
+            findNavController().navigate(R.id.action_games_to_gameMiner2)
         }
 
         return binding.root
@@ -73,10 +74,16 @@ class GamesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        if (!viewModel.privacy) {
+            findNavController().navigateUp()
+        }
         viewStateHandling()
         viewModel.setWin(0)
-        viewModel.resetSlotPositions()
+        viewModel.resetPositions()
         viewModel.resetSlots()
+        viewModel.isFinished = true
+        viewModel.isFinishing = false
     }
 
     private fun playClickSound() {
@@ -94,18 +101,44 @@ class GamesFragment : Fragment() {
         when {
             viewModel.isUserLoggedIn -> {
                 binding.apply {
-                    buttonRegister.visibility = View.GONE
-                    lvl.visibility = View.VISIBLE
-                    lvlValue.visibility = View.VISIBLE
+                    buttonRegister.apply {
+                        visibility = View.INVISIBLE
+                        isEnabled = false
+                    }
+                    barLvl.visibility = View.VISIBLE
+                    game3.apply {
+                        setImageResource(R.drawable.game_3_unlocked)
+                        isClickable = true
+                    }
+                    game4.apply {
+                        setImageResource(R.drawable.game_4_unlocked)
+                        isClickable = true
+                    }
                 }
             }
             else -> {
                 binding.apply {
-                    buttonRegister.visibility = View.VISIBLE
-                    lvl.visibility = View.GONE
-                    lvlValue.visibility = View.GONE
+                    buttonRegister.apply {
+                        visibility = View.VISIBLE
+                        isEnabled = true
+                    }
+                    barLvl.visibility = View.INVISIBLE
+                    game3.apply {
+                        setImageResource(R.drawable.game_3_locked)
+                        isClickable = false
+                    }
+                    game4.apply {
+                        setImageResource(R.drawable.game_4_locked)
+                        isClickable = false
+                    }
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 }

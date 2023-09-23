@@ -25,7 +25,7 @@
         android:id="@+id/bar_lvl"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/guideline_h12"
         app:layout_constraintEnd_toEndOf="@id/guideline_v64"
         app:layout_constraintStart_toStartOf="@id/guideline_v8"
@@ -51,7 +51,7 @@
             android:textColor="@color/white"
             android:textSize="30sp"
             android:visibility="visible"
-            app:text="100" />
+            tools:text="100" />
 
     </LinearLayout>
 

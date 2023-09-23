@@ -1,5 +1,6 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.adrenaline.ofathlet.BestActivity
 import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentGameMinerBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
-import com.adrenaline.ofathlet.presentation.slot.SlotAdapter
+import com.adrenaline.ofathlet.presentation.utilities.ImageUtility
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -26,9 +26,11 @@ class GameMinerFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: GameViewModel by activityViewModels()
     private val gameId = 3
-    private lateinit var leftSlotAdapter: SlotAdapter
-    private lateinit var centerSlotAdapter: SlotAdapter
-    private lateinit var rightSlotAdapter: SlotAdapter
+
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +38,9 @@ class GameMinerFragment : Fragment() {
     ): View {
         _binding = FragmentGameMinerBinding.inflate(inflater, container, false)
 
+        setClickListeners()
+
         viewModel.apply {
-            if (leftSlots.isEmpty()) generateSlots(gameId = gameId)
             binding.totalValue.text = balance.value.toString()
             binding.betValue.text = bet.value.toString()
         }
@@ -46,17 +49,16 @@ class GameMinerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch(Dispatchers.IO) {
-            launch(Dispatchers.Main) {
-                setRecyclerViews()
-                setClickListeners()
-                viewModel.apply {
-                    binding.leftRecyclerView.scrollToPosition(positions[0])
-                    binding.centerRecyclerView.scrollToPosition(positions[1])
-                    binding.rightRecyclerView.scrollToPosition(positions[2])
-                }
+
+        viewModel.minerStateChanged.onEach {
+            updateGameField()
+            if (viewModel.isFinishing) {
+                viewModel.finishMiner(gameId, requireContext())
             }
-        }
+        }.launchIn(lifecycleScope)
+
+        setRandomImages()
+
         viewModel.balance.onEach { newValue ->
             binding.totalValue.text = newValue.toString()
         }.launchIn(lifecycleScope)
@@ -86,29 +88,11 @@ class GameMinerFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        handleLastGameFinishing()
+        viewModel.apply {
+            setBalance(balance.value + lastBet, requireContext())
+        }
         _binding = null
-    }
-
-    private fun setRecyclerViews() {
-        leftSlotAdapter = SlotAdapter(viewModel.leftSlots, gameId)
-        centerSlotAdapter = SlotAdapter(viewModel.centerSlots, gameId)
-        rightSlotAdapter = SlotAdapter(viewModel.rightSlots, gameId)
-        binding.leftRecyclerView.apply {
-            adapter = leftSlotAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            setOnTouchListener { _, _ -> true }
-        }
-        binding.centerRecyclerView.apply {
-            adapter = centerSlotAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            setOnTouchListener { _, _ -> true }
-        }
-        binding.rightRecyclerView.apply {
-            adapter = rightSlotAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            setOnTouchListener { _, _ -> true }
-        }
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 
     private fun setClickListeners() {
@@ -117,14 +101,7 @@ class GameMinerFragment : Fragment() {
 
             buttonPlay.setOnClickListener {
                 playClickSound()
-                viewModel.spinSlots(
-                    listOf(
-                        leftRecyclerView,
-                        centerRecyclerView,
-                        rightRecyclerView
-                    ),
-                    requireContext()
-                )
+                viewModel.playMiner(gameId, requireContext())
             }
 
             plus.setOnClickListener {
@@ -147,6 +124,60 @@ class GameMinerFragment : Fragment() {
                         viewModel.bet.value
                     )
                 }
+            }
+
+            slotLeftTop.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerLeft[0] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 0, this.slotLeftTop)
+            }
+
+            slotLeftCenter.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerLeft[1] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 1, this.slotLeftCenter)
+            }
+
+            slotLeftBottom.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerLeft[2] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 2, this.slotLeftBottom)
+            }
+
+            slotCenterTop.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerCenter[0] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 3, this.slotCenterTop)
+            }
+
+            slotCenterCenter.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerCenter[1] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 4, this.slotCenterCenter)
+            }
+
+            slotCenterBottom.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerCenter[2] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 5, this.slotCenterBottom)
+            }
+
+            slotRightTop.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerRight[0] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 6, this.slotRightTop)
+            }
+
+            slotRightCenter.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerRight[1] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 7, this.slotRightCenter)
+            }
+
+            slotRightBottom.setOnClickListener {
+                playClickSound()
+                if (viewModel.positionsMinerRight[2] != 0) return@setOnClickListener
+                viewModel.discover(gameId, 8, this.slotRightBottom)
             }
         }
     }
@@ -184,14 +215,121 @@ class GameMinerFragment : Fragment() {
         )
     }
 
-    private fun handleLastGameFinishing() {
-        viewModel.apply {
-            if (isSpinningSlots) {
-                setBalance(balance.value + lastBet, requireContext())
-            } else return@apply
-            isFinished = true
-            isSpinningSlots = false
-            lastBet = 0
+    private fun updateGameField() {
+        binding.apply {
+            slotLeftTop.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerLeft[0],
+                    gameId
+                )
+            )
+            slotLeftCenter.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerLeft[1],
+                    gameId
+                )
+            )
+            slotLeftBottom.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerLeft[2],
+                    gameId
+                )
+            )
+            slotCenterTop.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerCenter[0],
+                    gameId
+                )
+            )
+            slotCenterCenter.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerCenter[1],
+                    gameId
+                )
+            )
+            slotCenterBottom.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerCenter[2],
+                    gameId
+                )
+            )
+            slotRightTop.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerRight[0],
+                    gameId
+                )
+            )
+            slotRightCenter.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerRight[1],
+                    gameId
+                )
+            )
+            slotRightBottom.setImageResource(
+                ImageUtility.getDrawableById(
+                    viewModel.positionsMinerRight[2],
+                    gameId
+                )
+            )
+        }
+    }
+
+    private fun setRandomImages() {
+        binding.apply {
+            slotLeftTop.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
+            slotLeftCenter.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
+            slotLeftBottom.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
+            slotCenterTop.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
+            slotCenterCenter.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
+            slotCenterBottom.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
+            slotRightTop.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
+            slotRightCenter.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
+            slotRightBottom.setImageResource(
+                ImageUtility.getDrawableById(
+                    ImageUtility.getRandomImageId(gameId),
+                    gameId
+                )
+            )
         }
     }
 }

@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.adrenaline.ofathlet.databinding.SlotBinding
 import com.adrenaline.ofathlet.presentation.utilities.ImageUtility
-import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
 
 class SlotAdapter(
     private val slotList: List<Slot>,
@@ -27,7 +26,7 @@ class SlotAdapter(
     override fun onBindViewHolder(holder: SlotViewHolder, position: Int) {
         val imageId = slotList[position].imageId
         holder.binding.image.apply {
-            setImageResource(ImageUtility.getDrawableId(imageId, gameId))
+            setImageResource(ImageUtility.getDrawableById(imageId, gameId))
         }
     }
 

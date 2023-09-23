@@ -1,5 +1,6 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -83,6 +84,11 @@ class GameSlot2Fragment : Fragment() {
                 viewModel.setIsPlayingSoundLose(false)
             }
         }.launchIn(lifecycleScope)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 
     override fun onDestroy() {

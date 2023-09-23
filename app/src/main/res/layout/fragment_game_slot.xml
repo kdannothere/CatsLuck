@@ -157,10 +157,10 @@
             android:id="@+id/left_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/guideline2_h93"
-            app:layout_constraintEnd_toEndOf="@id/guideline_v348"
+            app:layout_constraintBottom_toBottomOf="@id/guideline2_h666"
+            app:layout_constraintEnd_toEndOf="@id/guideline_v333"
             app:layout_constraintStart_toStartOf="@id/guideline2_v06"
-            app:layout_constraintTop_toTopOf="@id/guideline2_h07"
+            app:layout_constraintTop_toTopOf="@id/guideline2_h333"
             tools:itemCount="40"
             app:layout_constraintWidth_percent="0.28"
             tools:listitem="@layout/slot" />
@@ -169,10 +169,10 @@
             android:id="@+id/center_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/guideline2_h93"
-            app:layout_constraintEnd_toEndOf="@id/guideline_v6444"
-            app:layout_constraintStart_toStartOf="@id/guideline_v348"
-            app:layout_constraintTop_toTopOf="@id/guideline2_h07"
+            app:layout_constraintBottom_toBottomOf="@id/guideline2_h666"
+            app:layout_constraintEnd_toEndOf="@id/guideline_v666"
+            app:layout_constraintStart_toStartOf="@id/guideline_v333"
+            app:layout_constraintTop_toTopOf="@id/guideline2_h333"
             tools:itemCount="40"
             app:layout_constraintWidth_percent="0.28"
             tools:listitem="@layout/slot" />
@@ -182,22 +182,22 @@
             app:layout_constraintWidth_percent="0.28"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/guideline2_h93"
+            app:layout_constraintBottom_toBottomOf="@id/guideline2_h666"
             app:layout_constraintEnd_toEndOf="@id/guideline2_v94"
-            app:layout_constraintStart_toStartOf="@id/guideline_v6444"
-            app:layout_constraintTop_toTopOf="@id/guideline2_h07"
+            app:layout_constraintStart_toStartOf="@id/guideline_v666"
+            app:layout_constraintTop_toTopOf="@id/guideline2_h333"
             tools:itemCount="40"
             tools:listitem="@layout/slot" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2_h07"
+            android:id="@+id/guideline2_h333"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.07" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2_h93"
+            android:id="@+id/guideline2_h666"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -211,14 +211,14 @@
             app:layout_constraintGuide_percent="0.06" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_v348"
+            android:id="@+id/guideline_v333"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.348" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_v6444"
+            android:id="@+id/guideline_v666"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"

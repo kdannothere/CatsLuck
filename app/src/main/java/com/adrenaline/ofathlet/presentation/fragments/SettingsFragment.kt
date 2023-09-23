@@ -1,22 +1,21 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
-import android.os.Build
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.findNavController
 import com.adrenaline.ofathlet.BestActivity
 import com.adrenaline.ofathlet.R
 import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentSettingsBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
-import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,64 +37,61 @@ class SettingsFragment : Fragment() {
         binding.buttonMusic.setOnClickListener {
             playClickSound()
             changeMusicSetting()
-        }
-
-        binding.volumeMusic.setOnClickListener {
-            binding.buttonMusic.callOnClick()
-        }
-
-        binding.buttonSound.setOnClickListener {
-            playClickSound()
             changeSoundSetting()
         }
 
-        binding.volumeSound.setOnClickListener {
-            binding.buttonSound.callOnClick()
-        }
-
-        binding.switchVibration.setOnClickListener {
+        binding.buttonVibration.setOnClickListener {
             playClickSound()
             changeVibrationSetting()
+        }
+
+        binding.removeAccount.setOnClickListener {
+            playClickSound()
+            viewModel.removeAccount(requireContext())
+            Toast.makeText(requireContext(), "Your account was deleted", Toast.LENGTH_SHORT).show()
         }
 
         binding.textButtonResetScore.setOnClickListener {
             playClickSound()
             viewModel.resetScore(requireContext())
-        }
-
-        binding.buttonBack.setOnClickListener {
-            playClickSound()
-            findNavController().navigateUp()
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // fixing auto text feature for older Android APIs
-            ViewUtility.apply {
-                makeTextAutoSize(binding.textVibration)
-                makeTextAutoSize(binding.textButtonResetScore)
-            }
+            Toast.makeText(requireContext(), "Your scores were reset", Toast.LENGTH_SHORT).show()
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 
     private fun changeMusicSetting() {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
             if (viewModel.isMusicOn) {
                 DataManager.saveMusicSetting(requireContext(), false)
+                DataManager.saveSoundSetting(requireContext(), false)
                 MusicUtility.pauseMusic(
                     (activity as BestActivity).musicPlayer,
                     this
                 )
                 viewModel.isMusicOn = false
+                viewModel.isSoundOn = false
             } else {
                 DataManager.saveMusicSetting(requireContext(), true)
+                DataManager.saveSoundSetting(requireContext(), true)
                 MusicUtility.playMusic(
                     (activity as BestActivity).musicPlayer,
                     requireContext(),
                     this
                 )
                 viewModel.isMusicOn = true
+                viewModel.isSoundOn = true
             }
             setupSettings()
         }
@@ -132,20 +128,18 @@ class SettingsFragment : Fragment() {
     private fun setupSettings() {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
-                // set music
+                // set music and sound
                 if (viewModel.isMusicOn) {
-                    binding.volumeMusic.setImageResource(R.drawable.volume_max)
+                    binding.buttonMusic.setImageResource(R.drawable.volume_on)
                 } else {
-                    binding.volumeMusic.setImageResource(R.drawable.volume_min)
-                }
-                // set sound
-                if (viewModel.isSoundOn) {
-                    binding.volumeSound.setImageResource(R.drawable.volume_max)
-                } else {
-                    binding.volumeSound.setImageResource(R.drawable.volume_min)
+                    binding.buttonMusic.setImageResource(R.drawable.volume_off)
                 }
                 // set vibration
-                binding.switchVibration.isChecked = viewModel.isVibrationOn
+                if (viewModel.isVibrationOn) {
+                    binding.buttonVibration.setImageResource(R.drawable.volume_on)
+                } else {
+                    binding.buttonVibration.setImageResource(R.drawable.volume_off)
+                }
             }
         }
     }

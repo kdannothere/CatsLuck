@@ -1,6 +1,8 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.adrenaline.ofathlet.BestActivity
 import com.adrenaline.ofathlet.R
+import com.adrenaline.ofathlet.data.Constants
 import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentWelcomeBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
@@ -32,9 +35,10 @@ class WelcomeFragment : Fragment() {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
 
         binding.buttonStart.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.viewModelScope.launch(Dispatchers.IO) {
                 playClickSound()
                 viewModel.loadSettings(requireContext())
+                loadData()
                 val login =
                     async(Dispatchers.IO) {
                         DataManager.loadLogin(requireContext())
@@ -43,7 +47,6 @@ class WelcomeFragment : Fragment() {
                     launch(Dispatchers.Main) {
                         viewModel.isUserAnonymous = false
                         viewModel.signIn(requireContext(), login.await())
-                        loadData()
                         findNavController().navigate(R.id.action_welcome_to_menu)
                     }
                 } else {
@@ -67,7 +70,6 @@ class WelcomeFragment : Fragment() {
                             viewModel.balance.value
                         )
                     }
-                viewModel.setBalance(balance.await(), requireContext())
 
                 val bet =
                     async(Dispatchers.IO) {
@@ -76,7 +78,23 @@ class WelcomeFragment : Fragment() {
                             viewModel.bet.value
                         )
                     }
-                viewModel.setBet(bet.await(), requireContext())
+
+                if (balance.await() < bet.await()) {
+                    viewModel.setBalance(Constants.balanceDefault, requireContext())
+                    viewModel.setBet(Constants.betDefault, requireContext())
+                } else {
+                    viewModel.setBalance(balance.await(), requireContext())
+                    viewModel.setBet(bet.await(), requireContext())
+                }
+
+                val isPrivacyAccepted = async { DataManager.loadPrivacy(requireContext()) }
+                val winNumber =
+                    async { DataManager.loadWinNumber(requireContext(), viewModel.winNumber.value) }
+
+                val lvl = async { DataManager.loadLvl(requireContext(), viewModel.lvl.value) }
+                viewModel.privacy = isPrivacyAccepted.await()
+                viewModel.setWinNumber(winNumber.await(), requireContext())
+                viewModel.setLvl(lvl.await(), requireContext())
             }
         }
     }
@@ -93,5 +111,16 @@ class WelcomeFragment : Fragment() {
                 viewModel.isVibrationOn
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 }
