@@ -61,11 +61,10 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_settings"
         app:layout_constraintBottom_toBottomOf="@id/guideline_h12"
-        app:layout_constraintDimensionRatio="4:3"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="4:3.6"
+        app:layout_constraintEnd_toEndOf="@id/guideline_v92"
         app:layout_constraintStart_toStartOf="@id/guideline_v77"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,82 +74,142 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        android:scaleType="fitCenter"
         android:src="@drawable/game_1"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_h32"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_h38"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="@id/guideline_v92"
         app:layout_constraintStart_toStartOf="@id/guideline_v8"
-        app:layout_constraintTop_toTopOf="@id/guideline_h12" />
+        app:layout_constraintTop_toTopOf="@id/guideline_h6" />
 
-    <ImageView
-        android:id="@+id/game_2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/game_2"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_h69"
-        app:layout_constraintEnd_toEndOf="@id/guideline_v48"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintBottom_toBottomOf="@id/guideline_h65"
+        app:layout_constraintEnd_toEndOf="@id/guideline_v92"
         app:layout_constraintStart_toStartOf="@id/guideline_v8"
-        app:layout_constraintTop_toTopOf="@id/guideline_h32" />
+        app:layout_constraintTop_toTopOf="@id/guideline_h32"
+        android:layout_width="0dp"
+        android:layout_height="0dp">
 
-    <ImageView
-        android:id="@+id/game_3"
+        <ImageView
+            android:id="@+id/game_2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/game_2"
+            app:layout_constraintDimensionRatio="7:9"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline_v48"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            app:layout_constraintDimensionRatio="7:9"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline_v54"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp" >
+
+            <ImageView
+                android:id="@+id/game_3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/game_3_locked"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/game_4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/game_4_locked"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_v48"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.48" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_v54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.54" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/game_3_locked"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_h49"
-        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_h75"
         app:layout_constraintEnd_toEndOf="@id/guideline_v92"
-        app:layout_constraintStart_toStartOf="@id/guideline_v54"
-        app:layout_constraintTop_toTopOf="@id/guideline_h32" />
-
-    <ImageView
-        android:id="@+id/game_4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/game_4_locked"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_h69"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintEnd_toEndOf="@id/guideline_v92"
-        app:layout_constraintStart_toStartOf="@id/guideline_v54"
-        app:layout_constraintTop_toTopOf="@id/guideline_h49" />
-
-    <ImageView
-        android:id="@+id/game_5"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/game_5"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_h85"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintEnd_toEndOf="@id/guideline_v54"
         app:layout_constraintStart_toStartOf="@id/guideline_v8"
-        app:layout_constraintTop_toTopOf="@id/guideline_h69" />
+        app:layout_constraintTop_toTopOf="@id/guideline_h65"
+        >
 
-    <ImageView
-        android:id="@+id/game_6_coming_soon"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/fdafadfa"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_h85"
-        app:layout_constraintDimensionRatio="1:1.4"
-        app:layout_constraintEnd_toEndOf="@id/guideline_v92"
-        app:layout_constraintStart_toStartOf="@id/guideline_v64"
-        app:layout_constraintTop_toTopOf="@id/guideline_h69" />
+        <ImageView
+            android:id="@+id/game_5"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintDimensionRatio="16:6"
+            android:scaleType="fitCenter"
+            android:src="@drawable/game_5"
+            app:layout_constraintEnd_toEndOf="@id/guideline2_v66"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/game_6_coming_soon"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintDimensionRatio="3.9:4"
+            android:scaleType="fitCenter"
+            android:src="@drawable/fdafadfa"
+            app:layout_constraintStart_toStartOf="@id/guideline2_v76"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2_v66"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.66" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2_v76"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.76" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/game_7_coming_soon"
@@ -160,11 +219,17 @@
         android:focusable="true"
         android:scaleType="fitCenter"
         android:src="@drawable/fdafda"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="10:3"
         app:layout_constraintEnd_toEndOf="@id/guideline_v92"
         app:layout_constraintStart_toStartOf="@id/guideline_v8"
-        app:layout_constraintTop_toTopOf="@id/guideline_h85" />
+        app:layout_constraintTop_toTopOf="@id/guideline_h79" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_h6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.06" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_h12"
@@ -181,6 +246,13 @@
         app:layout_constraintGuide_percent="0.32" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_h38"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.38" />
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_h49"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -188,18 +260,32 @@
         app:layout_constraintGuide_percent="0.495" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_h69"
+        android:id="@+id/guideline_h63"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.69" />
+        app:layout_constraintGuide_percent="0.63" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_h85"
+        android:id="@+id/guideline_h65"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.65" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_h75"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_h79"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.79" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_v8"
@@ -207,20 +293,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.08" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_v48"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.48" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_v54"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.54" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_v64"
