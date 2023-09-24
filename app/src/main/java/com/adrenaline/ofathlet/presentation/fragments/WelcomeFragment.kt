@@ -45,7 +45,6 @@ class WelcomeFragment : Fragment() {
                     }
                 if (login.await().isNotEmpty()) {
                     launch(Dispatchers.Main) {
-                        viewModel.isUserAnonymous = false
                         viewModel.signIn(requireContext(), login.await())
                         findNavController().navigate(R.id.action_welcome_to_menu)
                     }

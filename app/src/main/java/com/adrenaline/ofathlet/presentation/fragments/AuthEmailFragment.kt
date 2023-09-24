@@ -39,6 +39,12 @@ class AuthEmailFragment : Fragment() {
             }
         }
 
+        binding.buttonAnonymousMode.setOnClickListener {
+            playClickSound()
+            viewModel.isUserAnonymous = true
+            findNavController().navigate(R.id.action_email_to_menu)
+        }
+
         binding.fieldEmail.setOnEditorActionListener { view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 ViewUtility.hideSoftKeyboard(view, this)
