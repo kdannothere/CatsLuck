@@ -25,9 +25,9 @@
         android:name="com.adrenaline.ofathlet.presentation.fragments.AuthEmailFragment"
         tools:layout="@layout/fragment_auth_email" >
         <action
-            android:id="@+id/action_email_to_menu"
-            app:destination="@id/menu"
-            app:popUpTo="@id/email" />
+            android:id="@+id/action_email_to_games"
+            app:destination="@id/games"
+            app:popUpTo="@id/menu" />
     </fragment>
 
     <fragment
@@ -87,6 +87,10 @@
             app:destination="@id/settings"
             app:popUpTo="@id/games" />
         <action
+            android:id="@+id/action_games_to_privacy"
+            app:destination="@id/privacy"
+            app:popUpTo="@id/menu" />
+        <action
             android:id="@+id/action_games_to_email"
             app:destination="@id/email"
             app:popUpTo="@id/games" />
@@ -117,13 +121,13 @@
         android:label="PrivacyFragment"
         tools:layout="@layout/fragment_privacy">
         <action
-            android:id="@+id/action_privacy_to_menu"
-            app:destination="@id/menu"
-            app:popUpTo="@id/privacy" />
-        <action
             android:id="@+id/action_privacy_to_games"
             app:destination="@id/games"
             app:popUpTo="@id/menu" />
+        <action
+            android:id="@+id/action_privacy_to_menu"
+            app:destination="@id/menu"
+            app:popUpTo="@id/welcome" />
     </fragment>
 
 </navigation>

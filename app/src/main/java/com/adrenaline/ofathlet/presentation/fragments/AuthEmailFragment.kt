@@ -1,7 +1,6 @@
 package com.adrenaline.ofathlet.presentation.fragments
 
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
@@ -35,14 +34,18 @@ class AuthEmailFragment : Fragment() {
             playClickSound()
             signIn()
             if (viewModel.isUserLoggedIn) {
-                findNavController().navigate(R.id.action_email_to_menu)
+                findNavController().navigate(R.id.action_email_to_games)
             }
         }
 
         binding.buttonAnonymousMode.setOnClickListener {
             playClickSound()
             viewModel.isUserAnonymous = true
-            findNavController().navigate(R.id.action_email_to_menu)
+            ViewUtility.showDialog(
+                requireActivity(),
+                requireContext().getString(R.string.anonymous_explanation)
+            )
+            findNavController().navigate(R.id.action_email_to_games)
         }
 
         binding.fieldEmail.setOnEditorActionListener { view, actionId, _ ->
@@ -66,6 +69,7 @@ class AuthEmailFragment : Fragment() {
                 viewModel.viewModelScope,
                 viewModel.isVibrationOn
             )
+            ViewUtility.showDialog(requireActivity(), getString(R.string.not_correct_email))
             return
         }
         viewModel.signIn(requireContext(), email)

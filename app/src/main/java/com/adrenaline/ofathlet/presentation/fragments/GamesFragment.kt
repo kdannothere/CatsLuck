@@ -15,6 +15,7 @@ import com.adrenaline.ofathlet.R
 import com.adrenaline.ofathlet.databinding.FragmentGamesBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
+import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -28,7 +29,13 @@ class GamesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+
+        if (!viewModel.privacy) {
+            findNavController().navigate(R.id.action_games_to_privacy)
+        }
+
         _binding = FragmentGamesBinding.inflate(inflater, container, false)
+
 
         viewModel.lvl.onEach { newValue ->
             binding.lvlValue.text = newValue.toString()
@@ -56,17 +63,45 @@ class GamesFragment : Fragment() {
 
         binding.game3.setOnClickListener {
             playClickSound()
-            findNavController().navigate(R.id.action_games_to_gameBonus)
+            when (viewModel.isUserLoggedIn) {
+                true -> findNavController().navigate(R.id.action_games_to_gameBonus)
+                false -> ViewUtility.showDialog(
+                    requireActivity(),
+                    requireContext().getString(R.string.game_only_for_reg_users)
+                )
+            }
         }
 
         binding.game4.setOnClickListener {
             playClickSound()
-            findNavController().navigate(R.id.action_games_to_gameMiner1)
+            when (viewModel.isUserLoggedIn) {
+                true -> findNavController().navigate(R.id.action_games_to_gameMiner1)
+                false -> ViewUtility.showDialog(
+                    requireActivity(),
+                    requireContext().getString(R.string.game_only_for_reg_users)
+                )
+            }
         }
 
         binding.game5.setOnClickListener {
             playClickSound()
             findNavController().navigate(R.id.action_games_to_gameMiner2)
+        }
+
+        binding.game6ComingSoon.setOnClickListener {
+            playClickSound()
+            ViewUtility.showDialog(
+                requireActivity(),
+                requireContext().getString(R.string.coming_soon)
+            )
+        }
+
+        binding.game7ComingSoon.setOnClickListener {
+            playClickSound()
+            ViewUtility.showDialog(
+                requireActivity(),
+                requireContext().getString(R.string.coming_soon)
+            )
         }
 
         return binding.root
@@ -75,9 +110,6 @@ class GamesFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        if (!viewModel.privacy) {
-            findNavController().navigateUp()
-        }
         viewStateHandling()
         viewModel.setWin(0)
         viewModel.resetPositions()
@@ -106,16 +138,11 @@ class GamesFragment : Fragment() {
                         isEnabled = false
                     }
                     barLvl.visibility = View.VISIBLE
-                    game3.apply {
-                        setImageResource(R.drawable.game_3_unlocked)
-                        isClickable = true
-                    }
-                    game4.apply {
-                        setImageResource(R.drawable.game_4_unlocked)
-                        isClickable = true
-                    }
+                    game3.setImageResource(R.drawable.game_3_unlocked)
+                    game4.setImageResource(R.drawable.game_4_unlocked)
                 }
             }
+
             else -> {
                 binding.apply {
                     buttonRegister.apply {
@@ -123,14 +150,8 @@ class GamesFragment : Fragment() {
                         isEnabled = true
                     }
                     barLvl.visibility = View.INVISIBLE
-                    game3.apply {
-                        setImageResource(R.drawable.game_3_locked)
-                        isClickable = false
-                    }
-                    game4.apply {
-                        setImageResource(R.drawable.game_4_locked)
-                        isClickable = false
-                    }
+                    game3.setImageResource(R.drawable.game_3_locked)
+                    game4.setImageResource(R.drawable.game_4_locked)
                 }
             }
         }

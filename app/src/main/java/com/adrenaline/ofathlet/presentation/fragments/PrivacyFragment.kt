@@ -18,6 +18,7 @@ import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentPrivacyBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
+import com.adrenaline.ofathlet.presentation.utilities.ViewUtility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -34,6 +35,7 @@ class PrivacyFragment : Fragment() {
         _binding = FragmentPrivacyBinding.inflate(inflater, container, false)
 
         binding.buttonPrivacy.setOnClickListener {
+            playClickSound()
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/"))
             startActivity(browserIntent)
         }
@@ -44,6 +46,10 @@ class PrivacyFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.IO) {
                 DataManager.savePrivacy(requireContext(), false)
             }
+            ViewUtility.showDialog(
+                requireActivity(),
+                requireContext().getString(R.string.agree_to_play)
+            )
             findNavController().navigate(R.id.action_privacy_to_menu)
         }
 
@@ -53,7 +59,7 @@ class PrivacyFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.IO) {
                 DataManager.savePrivacy(requireContext(), true)
             }
-            findNavController().navigate(R.id.action_privacy_to_menu)
+            findNavController().navigate(R.id.action_privacy_to_games)
         }
 
         return binding.root
