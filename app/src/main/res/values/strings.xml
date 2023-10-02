@@ -29,6 +29,5 @@
     <string name="not_correct_email">Enter correct email, please.</string>
     <string name="coming_soon">Coming soon…</string>
     <string name="game_only_for_reg_users">This game is available only for registered users.</string>
-    <string name="agree_to_play">You need to accept our privacy agreement to start playing the games.</string>
     <string name="anonymous_explanation">In anonymous mode some games are not available and your progress won\'t be saved. Please register to play without any restrictions.</string>
 </resources>

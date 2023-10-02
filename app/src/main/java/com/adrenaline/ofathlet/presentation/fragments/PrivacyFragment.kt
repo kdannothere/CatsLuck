@@ -40,19 +40,6 @@ class PrivacyFragment : Fragment() {
             startActivity(browserIntent)
         }
 
-        binding.buttonNo.setOnClickListener {
-            playClickSound()
-            viewModel.privacy = false
-            lifecycleScope.launch(Dispatchers.IO) {
-                DataManager.savePrivacy(requireContext(), false)
-            }
-            ViewUtility.showDialog(
-                requireActivity(),
-                requireContext().getString(R.string.agree_to_play)
-            )
-            findNavController().navigate(R.id.action_privacy_to_menu)
-        }
-
         binding.buttonYes.setOnClickListener {
             playClickSound()
             viewModel.privacy = true

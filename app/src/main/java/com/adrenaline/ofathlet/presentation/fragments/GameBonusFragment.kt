@@ -11,11 +11,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.adrenaline.ofathlet.BestActivity
 import com.adrenaline.ofathlet.data.Constants
+import com.adrenaline.ofathlet.data.DataManager
 import com.adrenaline.ofathlet.databinding.FragmentGameBonusBinding
 import com.adrenaline.ofathlet.presentation.GameViewModel
 import com.adrenaline.ofathlet.presentation.utilities.MusicUtility
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class GameBonusFragment : Fragment() {
 
@@ -29,10 +32,14 @@ class GameBonusFragment : Fragment() {
     ): View {
         _binding = FragmentGameBonusBinding.inflate(inflater, container, false)
 
-        setClickListener()
+        setClickListeners()
 
         viewModel.balance.onEach { newValue ->
             binding.totalValue.text = newValue.toString()
+        }.launchIn(lifecycleScope)
+
+        viewModel.bet.onEach { newValue ->
+            binding.betValue.text = newValue.toString()
         }.launchIn(lifecycleScope)
 
         viewModel.win.onEach { newValue ->
@@ -53,8 +60,6 @@ class GameBonusFragment : Fragment() {
             }
         }.launchIn(lifecycleScope)
 
-        binding.betValue.text = Constants.betDefault.toString()
-
         return binding.root
     }
 
@@ -70,10 +75,34 @@ class GameBonusFragment : Fragment() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 
-    private fun setClickListener() {
-        binding.buttonRepeat.setOnClickListener {
-            playClickSound()
-            viewModel.spinWheel(binding.wheel, requireContext())
+    private fun setClickListeners() {
+        binding.apply {
+
+            plus.setOnClickListener {
+                playClickSound()
+                viewModel.increaseBet(requireContext())
+                lifecycleScope.launch(Dispatchers.IO) {
+                    DataManager.saveBet(
+                        requireContext(),
+                        viewModel.bet.value
+                    )
+                }
+            }
+
+            minus.setOnClickListener {
+                playClickSound()
+                viewModel.decreaseBet(requireContext())
+                lifecycleScope.launch(Dispatchers.IO) {
+                    DataManager.saveBet(
+                        requireContext(),
+                        viewModel.bet.value
+                    )
+                }
+            }
+            buttonRepeat.setOnClickListener {
+                playClickSound()
+                viewModel.spinWheel(binding.wheel, requireContext())
+            }
         }
     }
 

@@ -68,18 +68,43 @@
         app:layout_constraintStart_toStartOf="@id/guideline_v77"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/game_1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/game_1"
         app:layout_constraintBottom_toBottomOf="@id/guideline_h38"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="@id/guideline_v92"
         app:layout_constraintStart_toStartOf="@id/guideline_v8"
-        app:layout_constraintTop_toTopOf="@id/guideline_h6" />
+        app:layout_constraintTop_toTopOf="@id/guideline_h6" >
+
+        <ImageView
+            android:id="@+id/game_1_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/game_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/game_1_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/play"
+            app:layout_constraintDimensionRatio="4:2"
+            app:layout_constraintWidth_percent="0.4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         app:layout_constraintBottom_toBottomOf="@id/guideline_h65"
@@ -89,19 +114,43 @@
         android:layout_width="0dp"
         android:layout_height="0dp">
 
-        <ImageView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/game_2"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:clickable="true"
             android:focusable="true"
-            android:scaleType="fitCenter"
             android:src="@drawable/game_2"
             app:layout_constraintDimensionRatio="7:9"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideline_v48"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/game_2_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/game_2"
+                app:layout_constraintDimensionRatio="7:9"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/game_2_button"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/play"
+                app:layout_constraintDimensionRatio="4:3"
+                app:layout_constraintWidth_percent="0.65"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             app:layout_constraintDimensionRatio="7:9"
@@ -167,19 +216,43 @@
         app:layout_constraintTop_toTopOf="@id/guideline_h65"
         >
 
-        <ImageView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/game_5"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintDimensionRatio="16:6"
-            android:scaleType="fitCenter"
-            android:src="@drawable/game_5"
             app:layout_constraintEnd_toEndOf="@id/guideline2_v66"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <ImageView
+                android:id="@+id/game_5_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="16:6"
+                android:src="@drawable/game_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/game_5_button"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/play"
+                app:layout_constraintDimensionRatio="4:2"
+                app:layout_constraintWidth_percent="0.45"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/game_6_coming_soon"

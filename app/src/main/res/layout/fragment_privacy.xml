@@ -69,19 +69,6 @@
         app:layout_constraintWidth_percent="0.7" />
 
     <ImageView
-        android:id="@+id/button_no"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitCenter"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/no"
-        app:layout_constraintTop_toTopOf="@id/guideline_h77"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guideline_v48"
-        app:layout_constraintStart_toStartOf="@id/guideline_v8" />
-
-    <ImageView
         android:id="@+id/button_yes"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -92,7 +79,8 @@
         app:layout_constraintTop_toTopOf="@id/guideline_h77"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_v92"
-        app:layout_constraintStart_toStartOf="@id/guideline_v52" />
+        app:layout_constraintStart_toStartOf="@id/guideline_v8"
+        app:layout_constraintWidth_percent="0.5" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_h15"
