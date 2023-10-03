@@ -45,8 +45,7 @@ class MenuFragment : Fragment() {
 
         binding.privacy.setOnClickListener {
             playClickSound()
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/"))
-            startActivity(browserIntent)
+            findNavController().navigate(R.id.action_menu_to_web)
         }
 
         binding.exit.setOnClickListener {

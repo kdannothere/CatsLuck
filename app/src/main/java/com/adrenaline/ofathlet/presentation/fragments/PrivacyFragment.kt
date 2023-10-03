@@ -24,8 +24,13 @@ import kotlinx.coroutines.launch
 
 class PrivacyFragment : Fragment() {
 
+    companion object {
+        const val privacyUrl = "https://www.google.com/"
+    }
+
     private var _binding: FragmentPrivacyBinding? = null
     private val binding get() = _binding!!
+
     private val viewModel: GameViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -36,8 +41,7 @@ class PrivacyFragment : Fragment() {
 
         binding.buttonPrivacy.setOnClickListener {
             playClickSound()
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/"))
-            startActivity(browserIntent)
+            findNavController().navigate(R.id.action_privacy_to_web)
         }
 
         binding.buttonYes.setOnClickListener {

@@ -21,6 +21,27 @@
     </fragment>
 
     <fragment
+        android:id="@+id/web"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.WebFragment"
+        tools:layout="@layout/fragment_web">
+    </fragment>
+
+    <fragment
+        android:id="@+id/privacy"
+        android:name="com.adrenaline.ofathlet.presentation.fragments.PrivacyFragment"
+        android:label="PrivacyFragment"
+        tools:layout="@layout/fragment_privacy">
+        <action
+            android:id="@+id/action_privacy_to_games"
+            app:destination="@id/games"
+            app:popUpTo="@id/menu" />
+        <action
+            android:id="@+id/action_privacy_to_web"
+            app:destination="@id/web"
+            app:popUpTo="@id/privacy" />
+    </fragment>
+
+    <fragment
         android:id="@+id/email"
         android:name="com.adrenaline.ofathlet.presentation.fragments.AuthEmailFragment"
         tools:layout="@layout/fragment_auth_email" >
@@ -45,6 +66,10 @@
         <action
             android:id="@+id/action_menu_to_privacy"
             app:destination="@id/privacy"
+            app:popUpTo="@id/menu" />
+        <action
+            android:id="@+id/action_menu_to_web"
+            app:destination="@id/web"
             app:popUpTo="@id/menu" />
     </fragment>
 
@@ -114,20 +139,6 @@
             android:id="@+id/action_games_to_gameMiner2"
             app:destination="@id/gameMiner2"
             app:popUpTo="@id/games" />
-    </fragment>
-    <fragment
-        android:id="@+id/privacy"
-        android:name="com.adrenaline.ofathlet.presentation.fragments.PrivacyFragment"
-        android:label="PrivacyFragment"
-        tools:layout="@layout/fragment_privacy">
-        <action
-            android:id="@+id/action_privacy_to_games"
-            app:destination="@id/games"
-            app:popUpTo="@id/menu" />
-        <action
-            android:id="@+id/action_privacy_to_menu"
-            app:destination="@id/menu"
-            app:popUpTo="@id/welcome" />
     </fragment>
 
 </navigation>

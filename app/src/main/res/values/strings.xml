@@ -30,4 +30,6 @@
     <string name="coming_soon">Coming soon…</string>
     <string name="game_only_for_reg_users">This game is available only for registered users.</string>
     <string name="anonymous_explanation">In anonymous mode some games are not available and your progress won\'t be saved. Please register to play without any restrictions.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
