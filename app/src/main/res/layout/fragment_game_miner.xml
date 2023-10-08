@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/b44"
     android:orientation="vertical"
-    tools:context="presentation.fragments.GameMinerFragment">
+    tools:context=".screens.games.GameMinerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_total"
@@ -31,7 +31,7 @@
             android:id="@+id/total_title"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/font1_bold"
             android:gravity="center"
             android:lines="1"
             android:text="@string/total"
@@ -48,7 +48,7 @@
             android:id="@+id/total_value"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/font1_bold"
             android:gravity="center"
             android:lines="1"
             android:textColor="@color/white"
@@ -93,7 +93,7 @@
             android:id="@+id/win_title"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/font1_bold"
             android:gravity="center"
             android:lines="1"
             android:text="@string/win"
@@ -110,7 +110,7 @@
             android:id="@+id/win_value"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/font1_bold"
             android:gravity="center"
             android:lines="1"
             android:textColor="@color/white"
@@ -317,7 +317,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:autoSizeTextType="uniform"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/font1_bold"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textStyle="bold"

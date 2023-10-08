@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/b11"
     android:orientation="vertical"
-    tools:context="presentation.fragments.PrivacyFragment">
+    tools:context=".screens.others.PrivacyFragment">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/text_title"
@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         app:autoSizeTextType="uniform"
         android:text="@string/privacy_policy_and_terms"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/font1_bold"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@id/guideline_h35"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         android:layout_height="0dp"
         app:autoSizeTextType="uniform"
         android:text="@string/acceptance"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/font1_bold"
         android:textColor="@color/white"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@id/guideline_h45"
@@ -59,7 +59,7 @@
         android:layout_height="0dp"
         app:autoSizeTextType="uniform"
         android:text="@string/agree"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/font1_bold"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@id/guideline_h77"
         app:layout_constraintEnd_toEndOf="parent"

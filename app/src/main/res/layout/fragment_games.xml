@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/b11"
-    tools:context="presentation.fragments.GamesFragment">
+    tools:context=".screens.others.GamesFragment">
 
     <ImageView
         android:id="@+id/button_register"

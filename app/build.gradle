@@ -14,9 +14,9 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.adrenaline.ofathlet"
+        applicationId "com.caty.lucky"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         setProperty("archivesBaseName", "$applicationId-$versionName")

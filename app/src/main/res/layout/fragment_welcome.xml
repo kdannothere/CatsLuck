@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/b11"
     android:orientation="vertical"
-    tools:context="presentation.fragments.WelcomeFragment">
+    tools:context=".screens.others.WelcomeFragment">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/text_sign_up"
@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         app:autoSizeTextType="uniform"
         android:text="@string/welcome"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/font1_bold"
         android:lines="1"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@id/guideline_h30"

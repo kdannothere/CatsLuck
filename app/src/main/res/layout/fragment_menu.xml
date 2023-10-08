@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/b11"
     android:orientation="vertical"
-    tools:context="presentation.fragments.MenuFragment">
+    tools:context=".screens.others.MenuFragment">
 
     <ImageView
         android:id="@+id/games"

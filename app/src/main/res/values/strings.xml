@@ -1,35 +1,31 @@
 <resources>
     <string name="app_name">Cat\'s Luck</string>
+    <string name="enter_email">Enter email</string>
     <string name="reset_score"><u>Reset score</u></string>
     <string name="privacy"><u>Privacy</u></string>
     <string name="play">Play</string>
     <string name="welcome">WELCOME!</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
     <string name="vibration">Vibration</string>
-    <string name="enter_email">Enter email</string>
-    <string name="game_1">Game 1</string>
-    <string name="game_2">Game 2</string>
     <string name="bonus_game">Bonus Game</string>
     <string name="total">Total</string>
     <string name="win">Win</string>
     <string name="sign_up">Sign Up!</string>
-    <string name="phone">Phone</string>
-    <string name="email">Email</string>
     <string name="anonymous">Anonymous</string>
+    <string name="music">Music</string>
+    <string name="remove_account"><u>Remove account</u></string>
     <string name="games">Games</string>
     <string name="settings">Settings</string>
     <string name="exit">exit</string>
-    <string name="music">Music</string>
-    <string name="remove_account"><u>Remove account</u></string>
     <string name="privacy_policy_and_terms"><![CDATA[Privacy Policy & Terms]]></string>
+    <string name="hint_email">Your email</string>
+    <string name="ok">OK</string>
     <string name="acceptance">Do you accept with our privacy?</string>
     <string name="agree">Agree?</string>
     <string name="lvl">LVL</string>
-    <string name="hint_email">Your email</string>
-    <string name="ok">OK</string>
     <string name="not_correct_email">Enter correct email, please.</string>
     <string name="coming_soon">Coming soon…</string>
     <string name="game_only_for_reg_users">This game is available only for registered users.</string>
     <string name="anonymous_explanation">In anonymous mode some games are not available and your progress won\'t be saved. Please register to play without any restrictions.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
