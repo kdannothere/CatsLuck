@@ -419,13 +419,13 @@ class CatViewModel : ViewModel() {
         }
     }
 
-    fun decreaseBet(context: Context) {
+    fun makeLessBet(context: Context) {
         if (currentBet.value > theBetDefault && !areSlotsGoing) {
             setBet(currentBet.value - theBetDefault, context)
         }
     }
 
-    fun increaseBet(context: Context) {
+    fun makeMoreBet(context: Context) {
         if (
             currentBet.value < currentScores.value
             && currentBet.value + theBetDefault <= currentScores.value

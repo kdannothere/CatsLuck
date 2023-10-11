@@ -22,7 +22,8 @@ class GameWheelBonFragment : Fragment() {
 
     private var _binding: FragmentGameWheelBonBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CatViewModel by activityViewModels()
+
+    private val catViewModel: CatViewModel by activityViewModels()
     private val gameId = 0
 
     override fun onCreateView(
@@ -33,32 +34,37 @@ class GameWheelBonFragment : Fragment() {
 
         setClickListeners()
 
-        viewModel.currentBet.onEach { newValue ->
-            binding.betValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
+        catViewModel.apply {
+            currentBet.onEach {
+                binding.betValue.text = it.toString()
+            }.launchIn(lifecycleScope)
 
-        viewModel.currentScores.onEach { newValue ->
-            binding.totalValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
+            currentScores.onEach {
+                binding.totalValue.text = it.toString()
 
-        viewModel.lastResult.onEach { newValue ->
-            binding.winValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
 
-        viewModel.playSoundWin.onEach { newValue ->
-            if (newValue) {
-                MngView.playWinSound(requireActivity(), viewModel, requireContext())
-                viewModel.playWin(false)
-            }
-        }.launchIn(lifecycleScope)
+            lastResult.onEach {
+                binding.winValue.text = it.toString()
 
-        viewModel.playSoundLose.onEach { newValue ->
-            if (newValue) {
-                MngView.playLoseSound(requireActivity(), viewModel, requireContext())
-                viewModel.playLose(false)
-            }
-        }.launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
 
+            playSoundWin.onEach {
+                if (it) {
+                    MngView.playWinSound(requireActivity(), this, requireContext())
+                    playWin(false)
+                }
+
+            }.launchIn(lifecycleScope)
+
+            playSoundLose.onEach {
+                if (it) {
+                    MngView.playLoseSound(requireActivity(), this, requireContext())
+                    playLose(false)
+                }
+
+            }.launchIn(lifecycleScope)
+        }
 
 
         return binding.root
@@ -66,7 +72,7 @@ class GameWheelBonFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.suddenEnding(requireContext(), gameId)
+        catViewModel.suddenEnding(requireContext(), gameId)
         _binding = null
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
@@ -77,34 +83,39 @@ class GameWheelBonFragment : Fragment() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
-    private fun setClickListeners() {
-        binding.apply {
+    private fun setClickListeners(hideMessage: String = "it's not me!") {
 
-            plus.setOnClickListener {
-                MngView.playClickSound(requireActivity(), viewModel, requireContext())
-                viewModel.increaseBet(requireContext())
+        if (hideMessage == "it's me!") return
+
+        catViewModel.apply {
+
+            binding.minus.setOnClickListener {
+                MngView.playClickSound(requireActivity(), this, requireContext())
+                makeLessBet(requireContext())
                 lifecycleScope.launch(CatApp.dispatcherIO) {
                     MngData.saveCurrentBet(
                         requireContext(),
-                        viewModel.currentBet.value
+                        currentBet.value
                     )
                 }
             }
 
-            minus.setOnClickListener {
-                MngView.playClickSound(requireActivity(), viewModel, requireContext())
-                viewModel.decreaseBet(requireContext())
+            binding.plus.setOnClickListener {
+                MngView.playClickSound(requireActivity(), this, requireContext())
+                makeMoreBet(requireContext())
                 lifecycleScope.launch(CatApp.dispatcherIO) {
                     MngData.saveCurrentBet(
                         requireContext(),
-                        viewModel.currentBet.value
+                        this@apply.currentBet.value
                     )
                 }
             }
-            buttonRepeat.setOnClickListener {
-                MngView.playClickSound(requireActivity(), viewModel, requireContext())
-                viewModel.spinGameWheel(binding.wheel, requireContext())
+
+            binding.buttonRepeat.setOnClickListener {
+                MngView.playClickSound(requireActivity(), this, requireContext())
+                spinGameWheel(binding.wheel, requireContext())
             }
+
         }
     }
 }

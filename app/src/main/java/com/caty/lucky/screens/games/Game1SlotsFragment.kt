@@ -109,7 +109,7 @@ class Game1SlotsFragment : Fragment() {
 
             binding.minus.setOnClickListener {
                 MngView.playClickSound(requireActivity(), this, requireContext())
-                decreaseBet(requireContext())
+                makeLessBet(requireContext())
                 lifecycleScope.launch(CatApp.dispatcherIO) {
                     MngData.saveCurrentBet(
                         requireContext(),
@@ -120,7 +120,7 @@ class Game1SlotsFragment : Fragment() {
 
             binding.plus.setOnClickListener {
                 MngView.playClickSound(requireActivity(), this, requireContext())
-                increaseBet(requireContext())
+                makeMoreBet(requireContext())
                 lifecycleScope.launch(CatApp.dispatcherIO) {
                     MngData.saveCurrentBet(
                         requireContext(),

@@ -103,7 +103,7 @@ class GameMinerFragment : Fragment() {
 
             plus.setOnClickListener {
                 MngView.playClickSound(requireActivity(), viewModel, requireContext())
-                viewModel.increaseBet(requireContext())
+                viewModel.makeMoreBet(requireContext())
                 lifecycleScope.launch(CatApp.dispatcherIO) {
                     MngData.saveCurrentBet(
                         requireContext(),
@@ -114,7 +114,7 @@ class GameMinerFragment : Fragment() {
 
             minus.setOnClickListener {
                 MngView.playClickSound(requireActivity(), viewModel, requireContext())
-                viewModel.decreaseBet(requireContext())
+                viewModel.makeLessBet(requireContext())
                 lifecycleScope.launch(CatApp.dispatcherIO) {
                     MngData.saveCurrentBet(
                         requireContext(),
