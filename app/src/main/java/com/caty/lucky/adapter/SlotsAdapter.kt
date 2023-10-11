@@ -1,4 +1,4 @@
-package com.caty.lucky.slots
+package com.caty.lucky.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

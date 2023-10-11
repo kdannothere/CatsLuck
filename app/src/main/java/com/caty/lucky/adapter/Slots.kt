@@ -1,4 +1,4 @@
-package com.caty.lucky.slots
+package com.caty.lucky.adapter
 
 class Slots(
     val id: Int,

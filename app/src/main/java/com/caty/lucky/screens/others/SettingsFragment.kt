@@ -43,7 +43,7 @@ class SettingsFragment : Fragment() {
 
         binding.buttonVibration.setOnClickListener {
             MngView.playClickSound(requireActivity(), viewModel, requireContext())
-            changeVibrationSetting()
+            changeVibroSetting()
         }
 
         binding.removeAccount.setOnClickListener {
@@ -74,7 +74,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun changeMusicSetting() {
-        viewModel.viewModelScope.launch(CatApp.dispatcherIO) {
+        lifecycleScope.launch(CatApp.dispatcherIO) {
             if (viewModel.isMusicSetOn) {
                 MngData.saveMusicSetting(requireContext(), false)
                 MngTheMusic.pauseTheMusic(
@@ -95,12 +95,15 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun changeVibrationSetting() {
-        viewModel.viewModelScope.launch(CatApp.dispatcherIO) {
+    private fun changeVibroSetting() {
+        lifecycleScope.launch(CatApp.dispatcherIO) {
+
             if (viewModel.isVibroSetOn) {
+
                 MngData.saveVibrationSetting(requireContext(), false)
                 viewModel.isVibroSetOn = false
             } else {
+
                 MngData.saveVibrationSetting(requireContext(), true)
                 viewModel.isVibroSetOn = true
                 MngTheMusic.doVibrate(requireContext(), lifecycleScope, viewModel.isVibroSetOn)
@@ -112,12 +115,14 @@ class SettingsFragment : Fragment() {
     private fun setupSettings() {
         viewModel.viewModelScope.launch(CatApp.dispatcherIO) {
             withContext(CatApp.dispatcherMain) {
+
                 // set music and sound
                 if (viewModel.isMusicSetOn) {
                     binding.buttonMusic.setImageResource(R.drawable.volume_on)
                 } else {
                     binding.buttonMusic.setImageResource(R.drawable.volume_off)
                 }
+
                 // set vibration
                 if (viewModel.isVibroSetOn) {
                     binding.buttonVibration.setImageResource(R.drawable.volume_on)

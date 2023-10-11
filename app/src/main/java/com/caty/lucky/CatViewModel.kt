@@ -17,7 +17,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import com.caty.lucky.managers.MngView
-import com.caty.lucky.slots.Slots
+import com.caty.lucky.adapter.Slots
 import kotlinx.coroutines.launch
 import java.util.Date
 import kotlin.math.absoluteValue
@@ -514,7 +514,7 @@ class CatViewModel : ViewModel() {
         }
     }
 
-    fun lastGameFinishing(context: Context, gameId: Int) {
+    fun suddenEnding(context: Context, gameId: Int) {
         when (gameId) {
             0 -> {
                 if (isWheelGoing) {

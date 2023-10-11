@@ -43,47 +43,44 @@ class GameMinerFragment : Fragment() {
         viewModel.apply {
             binding.totalValue.text = currentScores.value.toString()
             binding.betValue.text = currentBet.value.toString()
+
+            minerStateChanged.onEach {
+                updateGameField()
+                if (isNowFinishing) {
+                    finishMiner(gameId, requireContext())
+                }
+            }.launchIn(lifecycleScope)
+
+            setRandomImages()
+
+            currentScores.onEach {
+                binding.totalValue.text = it.toString()
+            }.launchIn(lifecycleScope)
+
+            lastResult.onEach {
+                binding.winValue.text = it.toString()
+            }.launchIn(lifecycleScope)
+
+            currentBet.onEach {
+                binding.betValue.text = it.toString()
+            }.launchIn(lifecycleScope)
+
+            playSoundWin.onEach {
+                if (it) {
+                    MngView.playWinSound(requireActivity(), this, requireContext())
+                    playWin(false)
+                }
+            }.launchIn(lifecycleScope)
+
+            playSoundLose.onEach {
+                if (it) {
+                    MngView.playLoseSound(requireActivity(), this, requireContext())
+                    playLose(false)
+                }
+            }.launchIn(lifecycleScope)
         }
+
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel.minerStateChanged.onEach {
-            updateGameField()
-            if (viewModel.isNowFinishing) {
-                viewModel.finishMiner(gameId, requireContext())
-            }
-        }.launchIn(lifecycleScope)
-
-        setRandomImages()
-
-        viewModel.currentScores.onEach { newValue ->
-            binding.totalValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
-
-        viewModel.lastResult.onEach { newValue ->
-            binding.winValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
-
-        viewModel.currentBet.onEach { newValue ->
-            binding.betValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
-
-        viewModel.playSoundWin.onEach { newValue ->
-            if (newValue) {
-                MngView.playWinSound(requireActivity(), viewModel, requireContext())
-                viewModel.playWin(false)
-            }
-        }.launchIn(lifecycleScope)
-
-        viewModel.playSoundLose.onEach { newValue ->
-            if (newValue) {
-                MngView.playLoseSound(requireActivity(), viewModel, requireContext())
-                viewModel.playLose(false)
-            }
-        }.launchIn(lifecycleScope)
     }
 
     override fun onDestroy() {

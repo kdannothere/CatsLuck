@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import com.caty.lucky.managers.MngData
 import com.caty.lucky.managers.MngView
-import com.caty.lucky.slots.SlotsAdapter
+import com.caty.lucky.adapter.SlotsAdapter
 import android.view.View
 import android.view.ViewGroup
 import com.caty.lucky.CatApp
@@ -24,54 +24,11 @@ class Game1SlotsFragment : Fragment() {
 
     private var _binding: FragmentGame1SlotsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: CatViewModel by activityViewModels()
+    private val catViewModel: CatViewModel by activityViewModels()
     private val gameId = 1
-    private lateinit var leftAdapter: SlotsAdapter
-    private lateinit var rightAdapter: SlotsAdapter
-    private lateinit var centerAdapter: SlotsAdapter
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch(CatApp.dispatcherIO) {
-            launch(CatApp.dispatcherMain) {
-                setRecyclers()
-                setClickListeners()
-                viewModel.apply {
-                    binding.leftRecyclerView.scrollToPosition(positionsSlotGame[0])
-                    binding.rightRecyclerView.scrollToPosition(positionsSlotGame[2])
-                    binding.centerRecyclerView.scrollToPosition(positionsSlotGame[1])
-                }
-            }
-        }
-
-        viewModel.lastResult.onEach { newValue ->
-            binding.winValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
-
-        viewModel.currentScores.onEach { newValue ->
-            binding.totalValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
-
-        viewModel.currentBet.onEach { newValue ->
-            binding.betValue.text = newValue.toString()
-        }.launchIn(lifecycleScope)
-
-
-        viewModel.playSoundLose.onEach { newValue ->
-            if (newValue) {
-                MngView.playLoseSound(requireActivity(), viewModel, requireContext())
-                viewModel.playLose(false)
-            }
-        }.launchIn(lifecycleScope)
-
-        viewModel.playSoundWin.onEach { newValue ->
-            if (newValue) {
-                MngView.playWinSound(requireActivity(), viewModel, requireContext())
-                viewModel.playWin(false)
-            }
-        }.launchIn(lifecycleScope)
-
-    }
+    private lateinit var lAdapter: SlotsAdapter
+    private lateinit var rAdapter: SlotsAdapter
+    private lateinit var cAdapter: SlotsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,56 +36,109 @@ class Game1SlotsFragment : Fragment() {
     ): View {
         _binding = FragmentGame1SlotsBinding.inflate(inflater, container, false)
 
-        viewModel.apply {
+        catViewModel.apply {
             if (leftPosSlot.isEmpty()) genSlots(gameId = gameId)
+
             binding.totalValue.text = currentScores.value.toString()
+
             binding.betValue.text = currentBet.value.toString()
+
+            lifecycleScope.launch(CatApp.dispatcherIO) {
+                launch(CatApp.dispatcherMain) {
+
+                    setRecyclers()
+
+                    setClickListeners()
+
+                    binding.leftRecyclerView.scrollToPosition(positionsSlotGame[0])
+
+                    binding.rightRecyclerView.scrollToPosition(positionsSlotGame[2])
+
+                    binding.centerRecyclerView.scrollToPosition(positionsSlotGame[1])
+                }
+            }
+
+            lastResult.onEach {
+
+                binding.winValue.text = it.toString()
+            }.launchIn(lifecycleScope)
+
+            currentScores.onEach {
+
+                binding.totalValue.text = it.toString()
+            }.launchIn(lifecycleScope)
+
+            currentBet.onEach {
+                binding.betValue.text = it.toString()
+
+            }.launchIn(lifecycleScope)
+
+
+            playSoundLose.onEach {
+                if (it) {
+                    MngView.playLoseSound(requireActivity(), this, requireContext())
+
+                    playLose(false)
+                }
+            }.launchIn(lifecycleScope)
+
+            playSoundWin.onEach {
+                if (it) {
+
+                    MngView.playWinSound(requireActivity(), this, requireContext())
+
+                    playWin(false)
+                }
+            }.launchIn(lifecycleScope)
         }
+
         return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.lastGameFinishing(requireContext(), gameId)
+        catViewModel.suddenEnding(requireContext(), gameId)
         _binding = null
     }
 
-    private fun setClickListeners() {
+    private fun setClickListeners(hideMessage: String = "it's not me!") {
 
-        binding.apply {
+        if (hideMessage == "it's me!") return
 
-            minus.setOnClickListener {
-                MngView.playClickSound(requireActivity(), viewModel, requireContext())
-                viewModel.decreaseBet(requireContext())
+        catViewModel.apply {
+
+            binding.minus.setOnClickListener {
+                MngView.playClickSound(requireActivity(), this, requireContext())
+                decreaseBet(requireContext())
                 lifecycleScope.launch(CatApp.dispatcherIO) {
                     MngData.saveCurrentBet(
                         requireContext(),
-                        viewModel.currentBet.value
+                        currentBet.value
                     )
                 }
             }
 
-            buttonPlay.setOnClickListener {
-                MngView.playClickSound(requireActivity(), viewModel, requireContext())
-                viewModel.spinGameSlots(
+            binding.plus.setOnClickListener {
+                MngView.playClickSound(requireActivity(), this, requireContext())
+                increaseBet(requireContext())
+                lifecycleScope.launch(CatApp.dispatcherIO) {
+                    MngData.saveCurrentBet(
+                        requireContext(),
+                        this@apply.currentBet.value
+                    )
+                }
+            }
+
+            binding.buttonPlay.setOnClickListener {
+                MngView.playClickSound(requireActivity(), this, requireContext())
+                this.spinGameSlots(
                     listOf(
-                        leftRecyclerView,
-                        centerRecyclerView,
-                        rightRecyclerView
+                        binding.leftRecyclerView,
+                        binding.centerRecyclerView,
+                        binding.rightRecyclerView
                     ),
                     requireContext()
                 )
-            }
-
-            plus.setOnClickListener {
-                MngView.playClickSound(requireActivity(), viewModel, requireContext())
-                viewModel.increaseBet(requireContext())
-                lifecycleScope.launch(CatApp.dispatcherIO) {
-                    MngData.saveCurrentBet(
-                        requireContext(),
-                        viewModel.currentBet.value
-                    )
-                }
             }
 
         }
@@ -139,25 +149,31 @@ class Game1SlotsFragment : Fragment() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
 
+    private fun setAdapters() {
+        lAdapter = SlotsAdapter(catViewModel.leftPosSlot, gameId)
+        rAdapter = SlotsAdapter(catViewModel.rightPosSlot, gameId)
+        cAdapter = SlotsAdapter(catViewModel.centerPosSlot, gameId)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
-    private fun setRecyclers() {
-        leftAdapter = SlotsAdapter(viewModel.leftPosSlot, gameId)
-        rightAdapter = SlotsAdapter(viewModel.rightPosSlot, gameId)
-        centerAdapter = SlotsAdapter(viewModel.centerPosSlot, gameId)
-        binding.leftRecyclerView.apply {
-            adapter = leftAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            setOnTouchListener { _, _ -> true }
-        }
-        binding.rightRecyclerView.apply {
-            adapter = rightAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            setOnTouchListener { _, _ -> true }
-        }
-        binding.centerRecyclerView.apply {
-            adapter = centerAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            setOnTouchListener { _, _ -> true }
+    private fun setRecyclers(index: Int = 0, n: Int = 999) {
+
+
+        if (index != 0) return
+        setAdapters()
+        binding.apply {
+            leftRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            leftRecyclerView.adapter = lAdapter
+            leftRecyclerView.setOnTouchListener { _, _ -> true }
+
+            rightRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            rightRecyclerView.adapter = rAdapter
+            rightRecyclerView.setOnTouchListener { _, _ -> true }
+
+            if (n == 1000) MngView.showDialog(requireActivity(), "Hi there!")
+            centerRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            centerRecyclerView.adapter = cAdapter
+            centerRecyclerView.setOnTouchListener { _, _ -> true }
         }
     }
 }

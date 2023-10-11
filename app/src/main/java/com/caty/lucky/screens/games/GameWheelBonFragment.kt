@@ -66,7 +66,7 @@ class GameWheelBonFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.lastGameFinishing(requireContext(), gameId)
+        viewModel.suddenEnding(requireContext(), gameId)
         _binding = null
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
     }
