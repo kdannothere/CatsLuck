@@ -72,10 +72,10 @@ class WelcomeFragment : Fragment() {
 
                 if (score.await() < currentBet.await()) {
                     viewModel.setScore(scoreDefault, requireContext())
-                    viewModel.setBet(theBetDefault, requireContext())
+                    viewModel.setTheBet(theBetDefault, requireContext())
                 } else {
                     viewModel.setScore(score.await(), requireContext())
-                    viewModel.setBet(currentBet.await(), requireContext())
+                    viewModel.setTheBet(currentBet.await(), requireContext())
                 }
 
                 val isPrivacyAccepted = async { MngData.loadPrivacy(requireContext()) }

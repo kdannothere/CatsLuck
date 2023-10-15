@@ -25,19 +25,6 @@ import kotlin.random.Random
 
 class CatViewModel : ViewModel() {
 
-    private val winField = mutableListOf<Int>()
-    val positionsMinerLeft = mutableListOf(0, 0, 0)
-    val positionsMinerCenter = mutableListOf(0, 0, 0)
-    val positionsMinerRight = mutableListOf(0, 0, 0)
-
-    private var email = ""
-
-    var privacy = false
-    var isMusicSetOn = false
-    var isVibroSetOn = false
-    val signedIn get() = email.isNotEmpty()
-    var isUserAnonymous = true
-
     private val _currentScores = MutableStateFlow(scoreDefault)
     val currentScores = _currentScores.asStateFlow()
 
@@ -62,11 +49,25 @@ class CatViewModel : ViewModel() {
     private val _playSoundLose = MutableStateFlow(false)
     val playSoundLose = _playSoundLose.asStateFlow()
 
+    private val winField = mutableListOf<Int>()
+    val positionsMinerLeft = mutableListOf(0, 0, 0)
+    val positionsMinerCenter = mutableListOf(0, 0, 0)
+
+    val positionsMinerRight = mutableListOf(0, 0, 0)
+
+    private var email = ""
+    var privacy = false
+    var isMusicSetOn = false
+    var isVibroSetOn = false
+    val signedIn get() = email.isNotEmpty()
+
+    var isUserAnonymous = true
+
     val leftPosSlot = mutableListOf<Slots>()
     val centerPosSlot = mutableListOf<Slots>()
     val rightPosSlot = mutableListOf<Slots>()
     var areSlotsGoing = false
-    private var latestIndex = 0
+    private var lastIndex = 0
     private val uniRandom = Random(Date().time)
 
 
@@ -134,16 +135,16 @@ class CatViewModel : ViewModel() {
         val maxValue = if (gameId == 3) 4 else 3
         var prize = 0.0
         winField.forEach {
-            prize += currentBet.value * getMultiplier(maxValue, it)
+            prize += lastBet * getMultiplier(maxValue, it)
         }
         if (prize > 0) {
-            playWin(true)
+            playWin(true, 0)
             setScore(currentScores.value + prize.toInt(), context)
             setLastResult(prize.toInt())
             setWinNumber(winNumber.value + 1, context)
             setLvl(lvl.value, context)
-        } else playLose(true)
-        lastBet = 0
+        } else playLose(true, 0)
+        lastBet = currentBet.value
         isAlreadyFinished = true
         isNowFinishing = false
     }
@@ -159,7 +160,7 @@ class CatViewModel : ViewModel() {
     }
 
     fun spinGameWheel(
-        wheel: ImageView,
+        imageView: ImageView,
         context: Context,
     ) {
         viewModelScope.launch(CatApp.dispatcherMain) {
@@ -213,7 +214,7 @@ class CatViewModel : ViewModel() {
 
                 })
             }
-            wheel.startAnimation(rotateAnimation)
+            imageView.startAnimation(rotateAnimation)
         }
     }
 
@@ -236,15 +237,15 @@ class CatViewModel : ViewModel() {
                     context,
                     viewModelScope,
                     positionsSlotGame,
-                    latestIndex,
-                    attachListener = { attachSlotsListener(recyclers[index], context) }
+                    lastIndex,
+                    listener = { listener(recyclers[index], context) }
                 )
             }
         }
     }
 
 
-    private fun attachSlotsListener(column: RecyclerView?, context: Context) {
+    private fun listener(column: RecyclerView?, context: Context) {
         viewModelScope.launch(CatApp.dispatcherIO) {
             column?.addOnScrollListener(
                 object : RecyclerView.OnScrollListener() {
@@ -290,14 +291,14 @@ class CatViewModel : ViewModel() {
         }
         when {
             creditsWon > 0 -> {
-                playWin(true)
+                playWin(true, 0)
                 setLastResult(creditsWon)
                 setScore(currentScores.value + creditsWon, context)
                 setWinNumber(winNumber.value + 1, context)
                 setLvl(lvl.value, context)
             }
 
-            else -> playLose(true)
+            else -> playLose(true, 0)
         }
 
         setLastResult(creditsWon)
@@ -323,21 +324,23 @@ class CatViewModel : ViewModel() {
     }
 
     private fun genPos() {
-        var biggestDiff = 0
+        var diff1 = 0
         repeat(3) { index ->
-            val currentPosition = positionsSlotGame[index]
-            val newPosition = getTheNewPos(index)
-            positionsSlotGame[index] = newPosition
-            val diff = (currentPosition - newPosition).absoluteValue
-            if (diff > biggestDiff) {
-                biggestDiff = diff
-                latestIndex = index
+            val curPos1 = positionsSlotGame[index]
+            val newPos1 = getTheNewPos(index)
+            positionsSlotGame[index] = newPos1
+            val diff = (curPos1 - newPos1).absoluteValue
+            if (diff > diff1) {
+                diff1 = diff
+                lastIndex = index
             }
         }
     }
 
     private fun getTheNewPos(index: Int): Int {
-        val pos = uniRandom.nextInt(0, leftPosSlot.lastIndex - 1)
+        val start = 0
+        val end = leftPosSlot.lastIndex - 1
+        val pos = uniRandom.nextInt(start, end)
         return when {
             positionsSlotGame[index] == pos ||
                     (positionsSlotGame[index] - pos).absoluteValue < 20
@@ -367,13 +370,15 @@ class CatViewModel : ViewModel() {
         }
     }
 
-    fun playLose(value: Boolean) {
+    fun playLose(value: Boolean, index: Int = 0) {
+        if (index != 0) return
         viewModelScope.launch {
             _playSoundLose.emit(value)
         }
     }
 
-    fun playWin(value: Boolean) {
+    fun playWin(value: Boolean, index: Int = 0) {
+        if (index != 0) return
         viewModelScope.launch {
             _playSoundWin.emit(value)
         }
@@ -385,7 +390,7 @@ class CatViewModel : ViewModel() {
         }
     }
 
-    fun setBet(value: Int, context: Context) {
+    fun setTheBet(value: Int, context: Context) {
         viewModelScope.launch(CatApp.dispatcherIO) {
             _currentBet.emit(value)
             if (isUserAnonymous) return@launch
@@ -421,7 +426,7 @@ class CatViewModel : ViewModel() {
 
     fun makeLessBet(context: Context) {
         if (currentBet.value > theBetDefault && !areSlotsGoing) {
-            setBet(currentBet.value - theBetDefault, context)
+            setTheBet(currentBet.value - theBetDefault, context)
         }
     }
 
@@ -431,13 +436,13 @@ class CatViewModel : ViewModel() {
             && currentBet.value + theBetDefault <= currentScores.value
             && !areSlotsGoing
         ) {
-            setBet(currentBet.value + theBetDefault, context)
+            setTheBet(currentBet.value + theBetDefault, context)
         }
     }
 
     fun resetScore(context: Context) {
         setScore(scoreDefault, context)
-        setBet(theBetDefault, context)
+        setTheBet(theBetDefault, context)
     }
 
     fun signIn(context: Context, email: String) {
@@ -450,7 +455,7 @@ class CatViewModel : ViewModel() {
 
     fun removeAccount(context: Context) {
         setScore(scoreDefault, context)
-        setBet(theBetDefault, context)
+        setTheBet(theBetDefault, context)
         setWinNumber(0, context)
         setLvl(0, context)
         email = ""
@@ -485,9 +490,9 @@ class CatViewModel : ViewModel() {
 
     private fun genSectors() {
         viewModelScope.launch {
-            val oneSectorDegree = 360 / wheelPrizeList.size
+            val theSectorDegree = (36 * 10) / wheelPrizeList.size
             repeat(wheelPrizeList.size) {
-                degreeList += (it + 1) * oneSectorDegree
+                degreeList += (it + 1) * theSectorDegree
             }
         }
     }

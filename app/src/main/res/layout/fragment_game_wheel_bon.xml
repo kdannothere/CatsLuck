@@ -46,7 +46,7 @@
             />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/total_value"
+            android:id="@+id/scores_of_user"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
@@ -109,7 +109,7 @@
             />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/win_value"
+            android:id="@+id/last_result_value"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
@@ -188,7 +188,7 @@
         app:layout_constraintWidth_percent="0.4" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/bet_value"
+        android:id="@+id/current_bet"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:autoSizeTextType="uniform"

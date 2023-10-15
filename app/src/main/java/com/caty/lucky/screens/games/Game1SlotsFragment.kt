@@ -39,9 +39,9 @@ class Game1SlotsFragment : Fragment() {
         catViewModel.apply {
             if (leftPosSlot.isEmpty()) genSlots(gameId = gameId)
 
-            binding.totalValue.text = currentScores.value.toString()
+            binding.scoresOfUser.text = currentScores.value.toString()
 
-            binding.betValue.text = currentBet.value.toString()
+            binding.currentBet.text = currentBet.value.toString()
 
             lifecycleScope.launch(CatApp.dispatcherIO) {
                 launch(CatApp.dispatcherMain) {
@@ -50,26 +50,26 @@ class Game1SlotsFragment : Fragment() {
 
                     setClickListeners()
 
-                    binding.leftRecyclerView.scrollToPosition(positionsSlotGame[0])
+                    binding.leftColumn.scrollToPosition(positionsSlotGame[0])
 
-                    binding.rightRecyclerView.scrollToPosition(positionsSlotGame[2])
+                    binding.rightColumn.scrollToPosition(positionsSlotGame[2])
 
-                    binding.centerRecyclerView.scrollToPosition(positionsSlotGame[1])
+                    binding.centerColumn.scrollToPosition(positionsSlotGame[1])
                 }
             }
 
             lastResult.onEach {
 
-                binding.winValue.text = it.toString()
+                binding.lastResultValue.text = it.toString()
             }.launchIn(lifecycleScope)
 
             currentScores.onEach {
 
-                binding.totalValue.text = it.toString()
+                binding.scoresOfUser.text = it.toString()
             }.launchIn(lifecycleScope)
 
             currentBet.onEach {
-                binding.betValue.text = it.toString()
+                binding.currentBet.text = it.toString()
 
             }.launchIn(lifecycleScope)
 
@@ -78,7 +78,7 @@ class Game1SlotsFragment : Fragment() {
                 if (it) {
                     MngView.playLoseSound(requireActivity(), this, requireContext())
 
-                    playLose(false)
+                    playLose(value = false, index = 0)
                 }
             }.launchIn(lifecycleScope)
 
@@ -87,7 +87,7 @@ class Game1SlotsFragment : Fragment() {
 
                     MngView.playWinSound(requireActivity(), this, requireContext())
 
-                    playWin(false)
+                    playWin(value = false, index = 0)
                 }
             }.launchIn(lifecycleScope)
         }
@@ -133,9 +133,9 @@ class Game1SlotsFragment : Fragment() {
                 MngView.playClickSound(requireActivity(), this, requireContext())
                 this.spinGameSlots(
                     listOf(
-                        binding.leftRecyclerView,
-                        binding.centerRecyclerView,
-                        binding.rightRecyclerView
+                        binding.leftColumn,
+                        binding.centerColumn,
+                        binding.rightColumn
                     ),
                     requireContext()
                 )
@@ -162,18 +162,18 @@ class Game1SlotsFragment : Fragment() {
         if (index != 0) return
         setAdapters()
         binding.apply {
-            leftRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            leftRecyclerView.adapter = lAdapter
-            leftRecyclerView.setOnTouchListener { _, _ -> true }
+            leftColumn.layoutManager = LinearLayoutManager(requireContext())
+            leftColumn.adapter = lAdapter
+            leftColumn.setOnTouchListener { _, _ -> true }
 
-            rightRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            rightRecyclerView.adapter = rAdapter
-            rightRecyclerView.setOnTouchListener { _, _ -> true }
+            rightColumn.layoutManager = LinearLayoutManager(requireContext())
+            rightColumn.adapter = rAdapter
+            rightColumn.setOnTouchListener { _, _ -> true }
 
             if (n == 1000) MngView.showDialog(requireActivity(), "Hi there!")
-            centerRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            centerRecyclerView.adapter = cAdapter
-            centerRecyclerView.setOnTouchListener { _, _ -> true }
+            centerColumn.layoutManager = LinearLayoutManager(requireContext())
+            centerColumn.adapter = cAdapter
+            centerColumn.setOnTouchListener { _, _ -> true }
         }
     }
 }

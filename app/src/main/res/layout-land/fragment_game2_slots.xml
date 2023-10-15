@@ -43,7 +43,7 @@
             app:layout_constraintWidth_percent="0.7" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/total_value"
+            android:id="@+id/scores_of_user"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fontFamily="@font/font1_bold"
@@ -104,7 +104,7 @@
             app:layout_constraintWidth_percent="0.7" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/win_value"
+            android:id="@+id/last_result_value"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fontFamily="@font/font1_bold"
@@ -154,7 +154,7 @@
         app:layout_constraintTop_toTopOf="@id/guideline_h25">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/left_recycler_view"
+            android:id="@+id/left_column"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/guideline2_h666"
@@ -166,7 +166,7 @@
             tools:listitem="@layout/slots" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/center_recycler_view"
+            android:id="@+id/center_column"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/guideline2_h666"
@@ -178,7 +178,7 @@
             tools:listitem="@layout/slots" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/right_recycler_view"
+            android:id="@+id/right_column"
             app:layout_constraintWidth_percent="0.28"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -247,7 +247,7 @@
         app:layout_constraintWidth_percent="0.2" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/bet_value"
+        android:id="@+id/current_bet"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:autoSizeTextType="uniform"

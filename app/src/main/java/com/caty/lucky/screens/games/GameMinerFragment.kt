@@ -41,8 +41,8 @@ class GameMinerFragment : Fragment() {
         setClickListeners()
 
         viewModel.apply {
-            binding.totalValue.text = currentScores.value.toString()
-            binding.betValue.text = currentBet.value.toString()
+            binding.scoresOfUser.text = currentScores.value.toString()
+            binding.currentBet.text = currentBet.value.toString()
 
             minerStateChanged.onEach {
                 updateGameField()
@@ -54,15 +54,15 @@ class GameMinerFragment : Fragment() {
             setRandomImages()
 
             currentScores.onEach {
-                binding.totalValue.text = it.toString()
+                binding.scoresOfUser.text = it.toString()
             }.launchIn(lifecycleScope)
 
             lastResult.onEach {
-                binding.winValue.text = it.toString()
+                binding.lastResultValue.text = it.toString()
             }.launchIn(lifecycleScope)
 
             currentBet.onEach {
-                binding.betValue.text = it.toString()
+                binding.currentBet.text = it.toString()
             }.launchIn(lifecycleScope)
 
             playSoundWin.onEach {

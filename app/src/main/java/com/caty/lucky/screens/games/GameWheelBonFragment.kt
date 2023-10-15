@@ -36,23 +36,23 @@ class GameWheelBonFragment : Fragment() {
 
         catViewModel.apply {
             currentBet.onEach {
-                binding.betValue.text = it.toString()
+                binding.currentBet.text = it.toString()
             }.launchIn(lifecycleScope)
 
             currentScores.onEach {
-                binding.totalValue.text = it.toString()
+                binding.scoresOfUser.text = it.toString()
 
             }.launchIn(lifecycleScope)
 
             lastResult.onEach {
-                binding.winValue.text = it.toString()
+                binding.lastResultValue.text = it.toString()
 
             }.launchIn(lifecycleScope)
 
             playSoundWin.onEach {
                 if (it) {
                     MngView.playWinSound(requireActivity(), this, requireContext())
-                    playWin(false)
+                    playWin(value = false, index = 0)
                 }
 
             }.launchIn(lifecycleScope)
@@ -60,7 +60,7 @@ class GameWheelBonFragment : Fragment() {
             playSoundLose.onEach {
                 if (it) {
                     MngView.playLoseSound(requireActivity(), this, requireContext())
-                    playLose(false)
+                    playLose(value = false, index = 0)
                 }
 
             }.launchIn(lifecycleScope)

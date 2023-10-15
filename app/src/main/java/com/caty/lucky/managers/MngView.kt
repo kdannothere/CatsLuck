@@ -68,7 +68,7 @@ object MngView {
         scope:CoroutineScope,
         positionsSlotGame: MutableList<Int>,
         latestIndex: Int,
-        attachListener: () -> Unit
+        listener: () -> Unit
     ) {
         scope.launch(CatApp.dispatcherMain) {
             val smoothScroller = object : LinearSmoothScroller(context) {
@@ -83,7 +83,7 @@ object MngView {
             smoothScroller.targetPosition = positionsSlotGame[index]
             recycler?.layoutManager?.startSmoothScroll(smoothScroller)
             if (recycler == null) return@launch
-            if (index == latestIndex) attachListener.invoke()
+            if (index == latestIndex) listener.invoke()
         }
     }
 
